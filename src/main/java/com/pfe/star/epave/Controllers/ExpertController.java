@@ -20,27 +20,32 @@ import java.util.stream.Collectors;
 @RequestMapping("/expert")
 public class ExpertController {
     private final Logger log = LoggerFactory.getLogger(ExpertController.class);
+
     @Autowired
     private final ExpertRepository Exp_repo;
     public ExpertController(ExpertRepository exp_repo){
         Exp_repo=exp_repo;
     }
+
     @GetMapping("/liste_exp")
     public Collection<Expert> liste_exp(){
         return Exp_repo.findAll();
     }
+
     @GetMapping("/expert/{id}")
     public ResponseEntity<?> ex_ById(@PathVariable("id") Long id) {
         Optional<Expert> exp = Exp_repo.findById(id);
         return exp.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
     @PostMapping("/ajouter_exp")
     public ResponseEntity<Expert> ajouter_exp(@Valid @RequestBody Expert exp) throws URISyntaxException {
         log.info("Ajouter un nouveau Expert", exp);
         Expert result = Exp_repo.save(exp);
         return ResponseEntity.created(new URI("/ajouter_Exp" + result.getId())).body(result);
     }
+
     @PutMapping("modifier_exp")
     public ResponseEntity<Expert> modifier_exp(@Valid @RequestBody Expert exp, @PathVariable("id") long id) {
         log.info("Modifier Expert", exp);
@@ -55,6 +60,7 @@ public class ExpertController {
         Expert result= Exp_repo.save(e);
         return ResponseEntity.ok().body(result);
     }
+
     @DeleteMapping("supprimer_exp")
     public ResponseEntity<?>supprimer_exp(@PathVariable("id")String id){
         log.info("Supprimer Expert",id);

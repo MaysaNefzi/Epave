@@ -25,22 +25,26 @@ public class EpavisteController {
     public EpavisteController(EpavisteRepository epav_repo){
         Epav_repo=epav_repo;
     }
+
     @GetMapping("/liste_epav")
     public Collection<Epaviste> liste_epav(){
         return Epav_repo.findAll();
     }
+
     @GetMapping("/epaviste/{id}")
-    public ResponseEntity<?> ex_ById(@PathVariable("id") Long id) {
+    public ResponseEntity<?> epav_ById(@PathVariable("id") Long id) {
         Optional<Epaviste> epav = Epav_repo.findById(id);
         return epav.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
     @PostMapping("/ajouter_epav")
     public ResponseEntity<Epaviste> ajouter_epav(@Valid @RequestBody Epaviste epav) throws URISyntaxException {
         log.info("Ajouter un nouveau Epaviste", epav);
         Epaviste result = Epav_repo.save(epav);
         return ResponseEntity.created(new URI("/ajouter_epav" + result.getId())).body(result);
     }
+
     @PutMapping("modifier_epav")
     public ResponseEntity<Epaviste> modifier_epav(@Valid @RequestBody Epaviste epav, @PathVariable("id") long id) {
         log.info("Modifier Epaviste", epav);
@@ -55,6 +59,7 @@ public class EpavisteController {
         Epaviste result= Epav_repo.save(e);
         return ResponseEntity.ok().body(result);
     }
+
     @DeleteMapping("supprimer_epav")
     public ResponseEntity<?>supprimer_epav(@PathVariable("id")String id){
         log.info("Supprimer Epaviste",id);

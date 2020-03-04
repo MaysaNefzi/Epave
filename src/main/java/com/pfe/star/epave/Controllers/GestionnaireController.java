@@ -30,10 +30,6 @@ public class GestionnaireController {
         return Gest_repo.findAll();
     }
 
-
-   /* public Optional<Gestionnaire> gest_byId(Long id) {
-        return Gest_repo.findById(id);
-    }*/
     @GetMapping("/gestionnaire/{id}")
     public ResponseEntity<?> gest_ById(@PathVariable("id") Long id) {
         Optional<Gestionnaire> gest = Gest_repo.findById(id);
