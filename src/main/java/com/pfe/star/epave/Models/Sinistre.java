@@ -12,7 +12,7 @@ public class Sinistre {
     @GeneratedValue
     private Long id;
     @NotNull
-    private Long numeroSinistre;
+    private String numeroSinistre;
     @NotNull
     private String immatriculation;
     @NotNull
@@ -42,7 +42,7 @@ public class Sinistre {
     public Sinistre() {
     }
 
-    public Sinistre(Long numeroSinistre, String immatriculation, LocalDate dateAccident, String numChassis, String marque,Boolean epave, String modele, double valeurVenale, Police police, Expert expert, Set<Rapport> rapports, Set<Photo> photos) {
+    public Sinistre(String numeroSinistre, String immatriculation, LocalDate dateAccident, String numChassis, String marque,Boolean epave, String modele, double valeurVenale, Police police, Expert expert, Set<Rapport> rapports, Set<Photo> photos) {
         this.numeroSinistre = numeroSinistre;
         this.immatriculation = immatriculation;
         this.dateAccident = dateAccident;
@@ -65,11 +65,11 @@ public class Sinistre {
         this.id = id;
     }
 
-    public Long getNumeroSinistre() {
+    public String getNumeroSinistre() {
         return numeroSinistre;
     }
 
-    public void setNumeroSinistre(Long numeroSinistre) {
+    public void setNumeroSinistre(String numeroSinistre) {
         this.numeroSinistre = numeroSinistre;
     }
 

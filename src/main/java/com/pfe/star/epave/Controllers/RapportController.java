@@ -1,8 +1,10 @@
 package com.pfe.star.epave.Controllers;
 
 import com.pfe.star.epave.Models.Epaviste;
+import com.pfe.star.epave.Models.Expert;
 import com.pfe.star.epave.Models.Rapport;
 import com.pfe.star.epave.Repositories.RapportRepository;
+import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -44,7 +44,7 @@ public class RapportController {
         Rapport result = R_repo.save(rap);
         return ResponseEntity.created(new URI("/ajouter_rapport_pre" + result.getId())).body(result);
     }
-    @PutMapping("/modifier_rapport_pre")
+    @PutMapping("/modifier_rapport_pre/{id}")
     public ResponseEntity<Rapport>modifier_rapport_pre(@Valid @RequestBody Rapport rap,@PathVariable("id") long id){
         log.info("Modifier Un rapport preliminaire", rap);
         Optional<Rapport> rapportOptional= R_repo.findById(id);
@@ -61,12 +61,18 @@ public class RapportController {
         return  ResponseEntity.ok().body(result);
     }
     @DeleteMapping("/supprimer_rapport/{id}")
-    public ResponseEntity<?>supprimer_rapport(@PathVariable("id")String id){
-        log.info("Supprimer Rapport",id);
-        List<Rapport> tt_rapports= R_repo.findAll().stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList());
-        for (Rapport r: tt_rapports)
-            R_repo.deleteById((r.getId()));
-        return ResponseEntity.ok().build();
+    public Map<String, Boolean> supprimer_rapport(@PathVariable Long id) {
+        Rapport r = null;
+        try {
+            r = R_repo.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Rapport introuvable pour cet id: " + id));
+        } catch (NotFoundException ex) {
+            ex.printStackTrace();
+        }
+        R_repo.delete(r);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("Rapport supprimé avec succes", Boolean.TRUE);
+        return response;
     }
 
 

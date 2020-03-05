@@ -17,7 +17,6 @@ public class Rapport {
     private double valeurVenale;
     @NotNull
     private String lieuVehicule;
-    @NotNull
     @ManyToOne
     @JoinColumn(name="sinistre_id" )
     private Sinistre sinistre;

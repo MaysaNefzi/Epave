@@ -8,10 +8,6 @@ import java.util.Set;
 @Entity
 public class Client extends Utilisateur {
     @NotNull
-    private String nom;
-    @NotNull
-    private String prenom;
-    @NotNull
     private String adresse;
     @NotNull
     private String gouvernement;
@@ -26,14 +22,11 @@ public class Client extends Utilisateur {
     @OneToMany(mappedBy="client", cascade= CascadeType.ALL)
     private Set<Police>polices = new HashSet<>();
 
-
     public Client() {
     }
 
-
-    public Client(String nom, String prenom, String adresse, String gouvernement, String delegation, long tel1, long tel2, String mail, Set<Police> polices) {
-        this.nom = nom;
-        this.prenom = prenom;
+    public Client(Long cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String adresse, @NotNull String gouvernement, @NotNull String delegation, @NotNull long tel1, @NotNull long tel2, String mail, @NotNull Set<Police> polices) {
+        super(cin, username, password, nom, prenom);
         this.adresse = adresse;
         this.gouvernement = gouvernement;
         this.delegation = delegation;
@@ -41,23 +34,6 @@ public class Client extends Utilisateur {
         this.tel2 = tel2;
         this.mail = mail;
         this.polices = polices;
-    }
-
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public String getPrenom() {
-        return prenom;
-    }
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
     }
 
     public String getAdresse() {
@@ -84,19 +60,19 @@ public class Client extends Utilisateur {
         this.delegation = delegation;
     }
 
-    public Long getTel1() {
+    public long getTel1() {
         return tel1;
     }
 
-    public void setTel1(Long tel1) {
+    public void setTel1(long tel1) {
         this.tel1 = tel1;
     }
 
-    public Long getTel2() {
+    public long getTel2() {
         return tel2;
     }
 
-    public void setTel2(Long tel2) {
+    public void setTel2(long tel2) {
         this.tel2 = tel2;
     }
 

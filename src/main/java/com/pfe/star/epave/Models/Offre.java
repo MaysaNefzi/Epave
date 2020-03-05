@@ -27,7 +27,7 @@ public class Offre {
     public Offre(Epaviste epaviste, Vente vente) {
         this.epaviste = epaviste;
         this.vente = vente;
-        this.id = new OffreID(epaviste.getId(), vente.getId());
+        this.id = new OffreID(epaviste.getCin(), vente.getId());
     }
 
     public OffreID getId() {

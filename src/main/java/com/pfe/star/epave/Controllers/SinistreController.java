@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,10 +37,9 @@ public class SinistreController {
     }
 
     @GetMapping("/sinistre/{numeroSinistre}")
-    public ResponseEntity<?> sin_ByNumSinistre(@PathVariable("numeroSinistre") Long numeroSinistre) {
-        Optional<Sinistre> sin = Sin_repo.findById(numeroSinistre);
-        return sin.map(response -> ResponseEntity.ok().body(response))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public Collection<Sinistre> sin_ByNumSinistre(@PathVariable String numeroSinistre) {
+        return Sin_repo.findAll().stream().filter(x -> x.getImmatriculation().equals(numeroSinistre)).collect(Collectors.toList());
+
     }
 
     @GetMapping("/sinistre/{immatriculation}")
@@ -61,6 +61,25 @@ public class SinistreController {
     @GetMapping("/tt_nonEpave")
     public Collection<Sinistre> tt_nonEpave() {
         return Sin_repo.findAll().stream().filter(this::non_Epave).collect(Collectors.toList());
+    }
+    @PutMapping("/modifier_sinistre/{id}")
+    public ResponseEntity<Sinistre> modifier_sinistre(@Valid @RequestBody Sinistre sinistre, @PathVariable("id") long id) {
+        log.info("Modifier sinistre", sinistre);
+        Optional<Sinistre> sinistreOptional = Sin_repo.findById(id);
+        if (sinistreOptional.isEmpty())
+            return ResponseEntity.notFound().build();
+        Sinistre sin = sinistreOptional.get();
+        sin.setId(id);
+        sin.setNumeroSinistre(sinistre.getNumeroSinistre());
+        sin.setImmatriculation(sinistre.getImmatriculation());
+        sin.setDateAccident(sinistre.getDateAccident());
+        sin.setNumChassis(sinistre.getNumChassis());
+        sin.setMarque(sinistre.getMarque());
+        sin.setEpave(sinistre.getEpave());
+        sin.setModele(sinistre.getModele());
+        sin.setValeurVenale(sinistre.getValeurVenale());
+        Sinistre result= Sin_repo.save(sin);
+        return ResponseEntity.ok().body(result);
     }
 
 

@@ -7,9 +7,7 @@ import java.util.Set;
 @Entity
 public class Epaviste extends Utilisateur {
     @NotNull
-    private String nom;
-    @NotNull
-    private String prenom;
+    private String matriculeFiscale;
     @NotNull
     private boolean compteActif=false;
     @OneToMany(mappedBy="epaviste",cascade=CascadeType.ALL)
@@ -19,28 +17,19 @@ public class Epaviste extends Utilisateur {
     public Epaviste() {
     }
 
-    public Epaviste(@NotNull String nom, @NotNull String prenom, boolean compteActif, Set<Vente> epaves) {
-        this.nom = nom;
-        this.prenom = prenom;
+    public Epaviste(Long cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String matriculeFiscale, @NotNull boolean compteActif, Set<Offre> offres) {
+        super(cin, username, password, nom, prenom);
+        this.matriculeFiscale = matriculeFiscale;
         this.compteActif = compteActif;
         this.offres = offres;
     }
 
-
-    public String getNom() {
-        return nom;
+    public String getMatriculeFiscale() {
+        return matriculeFiscale;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public String getPrenom() {
-        return prenom;
-    }
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
+    public void setMatriculeFiscale(String matriculeFiscale) {
+        this.matriculeFiscale = matriculeFiscale;
     }
 
     public boolean isCompteActif() {

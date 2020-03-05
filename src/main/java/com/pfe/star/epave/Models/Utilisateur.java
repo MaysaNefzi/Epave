@@ -9,17 +9,25 @@ public class Utilisateur {
     @Id
     @GeneratedValue
     private Long id;
+    private Long cin;
     @NotNull
-    private String login;
+    private String username;
     @NotNull
     private String password;
-
-    public Utilisateur(String login, String password) {
-        this.login = login;
-        this.password = password;
-    }
+    @NotNull
+    private String nom;
+    @NotNull
+    private String prenom;
 
     public Utilisateur() {
+    }
+
+    public Utilisateur(Long cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom) {
+        this.cin = cin;
+        this.username = username;
+        this.password = password;
+        this.nom = nom;
+        this.prenom = prenom;
     }
 
     public Long getId() {
@@ -30,12 +38,20 @@ public class Utilisateur {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public Long getCin() {
+        return cin;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setCin(Long cin) {
+        this.cin = cin;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -44,5 +60,21 @@ public class Utilisateur {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
 }

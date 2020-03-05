@@ -7,9 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 @Entity
 public class Vente extends Sinistre{
-    @Id
-    @GeneratedValue
-    private Long id;
     @NotNull
     private LocalDate dateCreation;
     @NotNull
@@ -41,15 +38,6 @@ public class Vente extends Sinistre{
         this.prixDebut = prixDebut;
         this.offres = offres;
         this.gestionnaire = gestionnaire;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LocalDate getDateCreation() {

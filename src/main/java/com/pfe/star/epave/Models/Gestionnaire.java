@@ -8,42 +8,31 @@ import java.util.Set;
 @Entity
 public class Gestionnaire extends Utilisateur {
     @NotNull
-    private String nom;
+    private String matricule;
     @NotNull
-    private String prenom;
-    @NotNull
-    private Boolean admin;
+    private boolean admin;
     @OneToMany(mappedBy="gestionnaire", cascade= CascadeType.ALL)
     private Set<Vente>ventes=new HashSet<>();
 
     public Gestionnaire() {
     }
 
-    public Gestionnaire(@NotNull String nom, @NotNull String prenom, @NotNull Boolean admin, Set<Vente> ventes) {
-        this.nom = nom;
-        this.prenom = prenom;
+    public Gestionnaire(Long cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String matricule, @NotNull Boolean admin, Set<Vente> ventes) {
+        super(cin, username, password, nom, prenom);
+        this.matricule = matricule;
         this.admin = admin;
-        ventes = ventes;
+        this.ventes = ventes;
     }
 
-
-    public String getNom() {
-        return nom;
+    public String getMatricule() {
+        return matricule;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setMatricule(String matricule) {
+        this.matricule = matricule;
     }
 
-    public String getPrenom() {
-        return prenom;
-    }
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
-
-    public Boolean getAdmin() {
+    public boolean isAdmin() {
         return admin;
     }
 
@@ -56,6 +45,6 @@ public class Gestionnaire extends Utilisateur {
     }
 
     public void setVentes(Set<Vente> ventes) {
-        ventes = ventes;
+        this.ventes = ventes;
     }
 }
