@@ -1,6 +1,5 @@
 package com.pfe.star.epave.Controllers;
 
-import com.pfe.star.epave.Models.Epaviste;
 import com.pfe.star.epave.Models.Gestionnaire;
 import com.pfe.star.epave.Repositories.GestionnaireRepository;
 import javassist.NotFoundException;

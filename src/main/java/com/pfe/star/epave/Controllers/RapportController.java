@@ -1,7 +1,5 @@
 package com.pfe.star.epave.Controllers;
 
-import com.pfe.star.epave.Models.Epaviste;
-import com.pfe.star.epave.Models.Expert;
 import com.pfe.star.epave.Models.Rapport;
 import com.pfe.star.epave.Repositories.RapportRepository;
 import javassist.NotFoundException;
@@ -16,7 +14,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/rapport")
