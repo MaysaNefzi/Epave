@@ -1,10 +1,14 @@
 package com.pfe.star.epave.Models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Entity
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Rapport {
     @Id
     @GeneratedValue

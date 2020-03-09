@@ -1,5 +1,8 @@
 package com.pfe.star.epave.Models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -7,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Entity
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Sinistre {
     @Id
     @GeneratedValue

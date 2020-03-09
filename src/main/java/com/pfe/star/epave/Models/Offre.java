@@ -1,5 +1,8 @@
 package com.pfe.star.epave.Models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -7,6 +10,7 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 
 @Entity
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Offre {
     @EmbeddedId
     private OffreID id;

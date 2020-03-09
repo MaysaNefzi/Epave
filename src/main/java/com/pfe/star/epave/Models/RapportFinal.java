@@ -1,9 +1,13 @@
 package com.pfe.star.epave.Models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class RapportFinal extends Rapport {
     @NotNull
     private String nomEpaviste;
