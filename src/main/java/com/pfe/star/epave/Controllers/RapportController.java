@@ -26,22 +26,26 @@ public class RapportController {
         R_repo=r_repo;
     }
     @GetMapping("/liste_rapport_pre")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Rapport> liste_rapport_pre(){
         return R_repo.findAll();
     }
     @GetMapping("/rapport/{sin}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> rapport_ByNumSinistre(@PathVariable Long sin){
         Optional<Rapport> rapport = R_repo.findById(sin);
         return rapport.map(response-> ResponseEntity.ok().body(response))
                 .orElse((new ResponseEntity<>(HttpStatus.NOT_FOUND)));
     }
     @PostMapping("/ajouter_rapport_pre")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Rapport> ajouter_rapport_pre(@Valid @RequestBody Rapport rap) throws URISyntaxException {
         log.info("Ajouter un nouveau rapport preliminaire", rap);
         Rapport result = R_repo.save(rap);
         return ResponseEntity.created(new URI("/ajouter_rapport_pre" + result.getId())).body(result);
     }
     @PutMapping("/modifier_rapport_pre/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Rapport>modifier_rapport_pre(@Valid @RequestBody Rapport rap,@PathVariable("id") long id){
         log.info("Modifier Un rapport preliminaire", rap);
         Optional<Rapport> rapportOptional= R_repo.findById(id);
@@ -58,6 +62,7 @@ public class RapportController {
         return  ResponseEntity.ok().body(result);
     }
     @DeleteMapping("/supprimer_rapport/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Boolean> supprimer_rapport(@PathVariable Long id) {
         Rapport r = null;
         try {
