@@ -25,11 +25,13 @@ public class SinistreController {
     }
 
     @GetMapping("/liste_sin")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> liste_sin(){
         return Sin_repo.findAll();
     }
 
     @GetMapping("/sinistre/{police}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> sin_ByPolice(@PathVariable("police") Long police) {
         Optional<Sinistre> sin = Sin_repo.findById(police);
         return sin.map(response -> ResponseEntity.ok().body(response))
@@ -37,12 +39,14 @@ public class SinistreController {
     }
 
     @GetMapping("/sinistre/{numeroSinistre}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> sin_ByNumSinistre(@PathVariable String numeroSinistre) {
         return Sin_repo.findAll().stream().filter(x -> x.getImmatriculation().equals(numeroSinistre)).collect(Collectors.toList());
 
     }
 
     @GetMapping("/sinistre/{immatriculation}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> Sin_ByImmatriculation(@PathVariable String immatriculation) {
         return Sin_repo.findAll().stream().filter(x -> x.getImmatriculation().equals(immatriculation)).collect(Collectors.toList());
 
@@ -55,14 +59,17 @@ public class SinistreController {
     }
 
     @GetMapping("/tt_Epave")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> tt_Epave() {
         return Sin_repo.findAll().stream().filter(this::est_Epave).collect(Collectors.toList());
     }
     @GetMapping("/tt_nonEpave")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> tt_nonEpave() {
         return Sin_repo.findAll().stream().filter(this::non_Epave).collect(Collectors.toList());
     }
     @PutMapping("/modifier_sinistre/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Sinistre> modifier_sinistre(@Valid @RequestBody Sinistre sinistre, @PathVariable("id") long id) {
         log.info("Modifier sinistre", sinistre);
         Optional<Sinistre> sinistreOptional = Sin_repo.findById(id);

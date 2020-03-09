@@ -27,11 +27,13 @@ public class ExpertController {
     }
 
     @GetMapping("/liste_exp")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Expert> liste_exp(){
         return Exp_repo.findAll();
     }
 
     @GetMapping("/expert/{cin}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> ex_ById(@PathVariable("cin") Long cin) {
         Optional<Expert> exp = Exp_repo.findById(cin);
         return exp.map(response -> ResponseEntity.ok().body(response))
@@ -39,6 +41,7 @@ public class ExpertController {
     }
 
     @PostMapping("/ajouter_exp")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Expert> ajouter_exp(@Valid @RequestBody Expert exp) throws URISyntaxException {
         log.info("Ajouter un nouveau Expert", exp);
         Expert result = Exp_repo.save(exp);
@@ -46,6 +49,7 @@ public class ExpertController {
     }
 
     @PutMapping("/modifier_exp/{cin}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Expert> modifier_exp(@Valid @RequestBody Expert exp, @PathVariable("cin") long cin) {
         log.info("Modifier Expert", exp);
         Optional<Expert> expOptional = Exp_repo.findById(cin);
@@ -63,6 +67,7 @@ public class ExpertController {
     }
 
     @DeleteMapping("/supprimer_exp/{cin}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Boolean> supprimer_exp(@PathVariable Long cin) {
         Expert e = null;
         try {

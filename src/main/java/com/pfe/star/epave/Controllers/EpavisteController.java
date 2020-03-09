@@ -26,23 +26,27 @@ public class EpavisteController {
     }
 
     @GetMapping("/liste_epav")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Epaviste> liste_epav(){
         return Epav_repo.findAll();
     }
 
     @GetMapping("/epavisteByCin/{cin}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> epav_ById(@PathVariable("cin") Long cin) {
         Optional<Epaviste> epav = Epav_repo.findById(cin);
         return epav.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     @GetMapping("/epavisteByMatr_fisc/{matFisc}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Epaviste> epavByMatr_fisc(@PathVariable String matFisc) {
         return Epav_repo.findAll().stream().filter(x -> x.getMatriculeFiscale().equals(matFisc)).collect(Collectors.toList());
 
     }
 
     @PostMapping("/ajouter_epav")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Epaviste> ajouter_epav(@Valid @RequestBody Epaviste epav) throws URISyntaxException {
         log.info("Ajouter un nouveau Epaviste", epav);
         Epaviste result = Epav_repo.save(epav);
@@ -50,6 +54,7 @@ public class EpavisteController {
     }
 
     @PutMapping("/modifier_epav/{cin}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Epaviste> modifier_epav(@Valid @RequestBody Epaviste epav, @PathVariable("cin") long cin) {
         log.info("Modifier Epaviste", epav);
         Optional<Epaviste> epavOptional = Epav_repo.findById(cin);
@@ -69,6 +74,7 @@ public class EpavisteController {
     }
 
     @DeleteMapping("/supprimer_epav/{cin}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Boolean> supprimer_epav(@PathVariable Long cin) {
         Epaviste e = null;
         try {

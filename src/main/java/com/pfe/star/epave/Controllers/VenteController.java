@@ -32,11 +32,13 @@ public class VenteController {
     }
 
     @GetMapping("/liste_vente")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Vente> liste_vente(){
         return V_repo.findAll();
     }
 
     @GetMapping("/vente/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> vente_ById(@PathVariable("id") Long id) {
         Optional<Vente> vente = V_repo.findById(id);
         return vente.map(response -> ResponseEntity.ok().body(response))
@@ -44,6 +46,7 @@ public class VenteController {
     }
 
     @PostMapping("/ajouter_vente")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Vente> ajouter_vente(@Valid @RequestBody Vente vente) throws URISyntaxException {
         log.info("Ajouter une nouvelle vente", vente);
         Vente result = V_repo.save(vente);
@@ -57,15 +60,18 @@ public class VenteController {
     }
 
     @GetMapping("/liste_enchere")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Vente> liste_enchere() {
         return V_repo.findAll().stream().filter(this::est_Enchere).collect(Collectors.toList());
     }
     @GetMapping("/liste_appelOffre")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Vente> liste_appelOffre() {
         return V_repo.findAll().stream().filter(this::est_AppelOffre).collect(Collectors.toList());
     }
 
     @PutMapping("/modifier_vente/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Vente> modifier_vente(@Valid @RequestBody Vente vente, @PathVariable("id") long id) {
         log.info("Modifier vente", vente);
         Optional<Vente> venteOptional = V_repo.findById(id);
@@ -92,6 +98,7 @@ public class VenteController {
     }
 
     @DeleteMapping("/supprimer_vente/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Boolean> supprimer_vente(@PathVariable Long id) {
         Vente v = null;
         try {

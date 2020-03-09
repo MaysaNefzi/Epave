@@ -24,10 +24,12 @@ public class ClientController {
         C_repo = c_repo;
     }
     @GetMapping("/liste_client")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Client> liste_client(){
         return C_repo.findAll();
     }
     @PostMapping("/ajouter_compte_client")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Client> ajouter_compte_client(@Valid @RequestBody Client client) throws URISyntaxException {
         log.info("Créer un compte client", client);
         Client result = C_repo.save(client);
@@ -35,6 +37,7 @@ public class ClientController {
     }
 
     @PutMapping("/modifier_compte_client/{cin}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Client> modifier_compte_client(@Valid @RequestBody Client client, @PathVariable("cin") long cin) {
         log.info("Modifier compte Client", client);
         Optional<Client> clientOptional = C_repo.findById(cin);

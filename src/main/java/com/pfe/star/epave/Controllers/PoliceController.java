@@ -7,10 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -24,6 +21,7 @@ public class PoliceController {
         Police_repo=police_repo;
     }
     @GetMapping("/police/{numPolice}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> police_ByNum(@PathVariable("numPolice") Long numPolice) {
         Optional<Police> police = Police_repo.findById(numPolice);
         return police.map(response -> ResponseEntity.ok().body(response))

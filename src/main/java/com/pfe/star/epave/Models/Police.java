@@ -1,5 +1,7 @@
 package com.pfe.star.epave.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -26,6 +28,7 @@ public class Police {
     @JoinColumn(name="client_id" )
     private Client client;
     @OneToMany(mappedBy="police", cascade= CascadeType.ALL)
+    @JsonIgnore
     private Set<Sinistre>sinistres;
 
     public Police() {

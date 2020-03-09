@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
 @RestController
-@RequestMapping("/")
+@RequestMapping("/offre")
 public class OffreController {
     private final Logger log = LoggerFactory.getLogger(OffreController.class);
     @Autowired
@@ -24,17 +24,20 @@ public class OffreController {
         Offre_repo=offre_repo;
     }
     @GetMapping("/liste_offre")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Offre> liste_offre(){
         return Offre_repo.findAll();
     }
 
     @PostMapping("/ajouter_offre")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Offre> ajouter_offre(@Valid @RequestBody Offre offre) throws URISyntaxException {
         log.info("Ajouter une nouvelle Offre", offre);
         Offre result = Offre_repo.save(offre);
         return ResponseEntity.created(new URI("/ajouter_offre" + result.getId())).body(result);
     }
     @PutMapping("modifier_montant")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Offre> modifier_montant(@Valid @RequestBody Offre offre, @PathVariable("id") long id) {
         log.info("Modifier Offre", offre);
         Optional<Offre> offreOptional = Offre_repo.findById(id);

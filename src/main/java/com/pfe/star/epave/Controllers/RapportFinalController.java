@@ -29,22 +29,26 @@ public class RapportFinalController {
         RF_repo=r_repo;
     }
     @GetMapping("/liste_rapport_final")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<RapportFinal> liste_rapport_final(){
         return RF_repo.findAll();
     }
     @GetMapping("/rapportfinal/{sin}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> rapport_Final_ByNumSinistre(@PathVariable Long sin){
         Optional<RapportFinal> rapportf = RF_repo.findById(sin);
         return rapportf.map(response-> ResponseEntity.ok().body(response))
                 .orElse((new ResponseEntity<>(HttpStatus.NOT_FOUND)));
     }
     @PostMapping("/ajouter_rapport_final")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<RapportFinal> ajouter_rapport_final(@Valid @RequestBody RapportFinal rapF) throws URISyntaxException {
         log.info("Ajouter un nouveau rapport final", rapF);
         RapportFinal result = RF_repo.save(rapF);
         return ResponseEntity.created(new URI("/ajouter_rapport_final" + result.getId())).body(result);
     }
     @PutMapping("/modifier_rapport_final/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<RapportFinal>modifier_rapport_final(@Valid @RequestBody RapportFinal rapF,@PathVariable("id") long id){
         log.info("Modifier Un rapport final", rapF);
         Optional<RapportFinal> rapportFOptional= RF_repo.findById(id);
@@ -61,6 +65,7 @@ public class RapportFinalController {
         return  ResponseEntity.ok().body(result);
     }
     @DeleteMapping("/supprimer_rapport_final/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Boolean> supprimer_rapport_final(@PathVariable Long id) {
         RapportFinal rf = null;
         try {
