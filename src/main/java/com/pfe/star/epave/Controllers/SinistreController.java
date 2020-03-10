@@ -30,22 +30,28 @@ public class SinistreController {
         return Sin_repo.findAll();
     }
 
-    @GetMapping("/sinistre/{police}")
+    @GetMapping("/sin_ByID/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<?> sin_ByPolice(@PathVariable("police") Long police) {
-        Optional<Sinistre> sin = Sin_repo.findById(police);
+    public ResponseEntity<?> sin_ByID(@PathVariable("id") Long id) {
+        Optional<Sinistre> sin = Sin_repo.findById(id);
         return sin.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+    @GetMapping("/sin_ByNumPolice/{numeroPolice}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Sinistre> sin_ByNumPolice(@PathVariable String numeroPolice) {
+        return Sin_repo.findAll().stream().filter(x -> x.getImmatriculation().equals(numeroPolice)).collect(Collectors.toList());
 
-    @GetMapping("/sinistre/{numeroSinistre}")
+    }
+
+    @GetMapping("/sin_ByNumSinistre/{numeroSinistre}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> sin_ByNumSinistre(@PathVariable String numeroSinistre) {
         return Sin_repo.findAll().stream().filter(x -> x.getImmatriculation().equals(numeroSinistre)).collect(Collectors.toList());
 
     }
 
-    @GetMapping("/sinistre/{immatriculation}")
+    @GetMapping("/Sin_ByImmatriculation/{immatriculation}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> Sin_ByImmatriculation(@PathVariable String immatriculation) {
         return Sin_repo.findAll().stream().filter(x -> x.getImmatriculation().equals(immatriculation)).collect(Collectors.toList());

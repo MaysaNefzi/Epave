@@ -15,6 +15,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+
 @RestController
 @RequestMapping("/rapport")
 public class RapportController {
@@ -30,13 +31,19 @@ public class RapportController {
     public Collection<Rapport> liste_rapport_pre(){
         return R_repo.findAll();
     }
-    @GetMapping("/rapport/{sin}")
+    @GetMapping("/rapport_ById/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<?> rapport_ByNumSinistre(@PathVariable Long sin){
-        Optional<Rapport> rapport = R_repo.findById(sin);
+    public ResponseEntity<?> rapport_ById(@PathVariable Long id){
+        Optional<Rapport> rapport = R_repo.findById(id);
         return rapport.map(response-> ResponseEntity.ok().body(response))
                 .orElse((new ResponseEntity<>(HttpStatus.NOT_FOUND)));
     }
+    /*@GetMapping("/rapport_ByNumSinistre/{mat}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Rapport> rapport_ByNumSinistre(@PathVariable String sin) {
+        return R_repo.findAll().stream().filter(x -> x.getSinistre().equals(sin)).collect(Collectors.toList());
+
+    }*/
     @PostMapping("/ajouter_rapport_pre")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Rapport> ajouter_rapport_pre(@Valid @RequestBody Rapport rap) throws URISyntaxException {

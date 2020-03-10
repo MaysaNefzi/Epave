@@ -15,7 +15,7 @@ public class Police {
     @GeneratedValue
     private Long id;
     @NotNull
-    private Long numPolice;
+    private String numPolice;
     @NotNull
     private String typePolice;
     @NotNull
@@ -37,7 +37,7 @@ public class Police {
     public Police() {
     }
 
-    public Police(Long numPolice, String typePolice, String branchePolice, LocalDate dateEffet, LocalDate dateEcheance, String etatPolice, Client client, Set<Sinistre> sinistres) {
+    public Police(String numPolice, String typePolice, String branchePolice, LocalDate dateEffet, LocalDate dateEcheance, String etatPolice, Client client, Set<Sinistre> sinistres) {
         this.numPolice = numPolice;
         this.typePolice = typePolice;
         this.branchePolice = branchePolice;
@@ -56,11 +56,11 @@ public class Police {
         this.id = id;
     }
 
-    public Long getNumPolice() {
+    public String getNumPolice() {
         return numPolice;
     }
 
-    public void setNumPolice(Long numPolice) {
+    public void setNumPolice(String numPolice) {
         this.numPolice = numPolice;
     }
 

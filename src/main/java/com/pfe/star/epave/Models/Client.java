@@ -29,7 +29,7 @@ public class Client extends Utilisateur {
     public Client() {
     }
 
-    public Client(Long cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String adresse, @NotNull String gouvernement, @NotNull String delegation, @NotNull long tel1, @NotNull long tel2, String mail, @NotNull Set<Police> polices) {
+    public Client(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String adresse, @NotNull String gouvernement, @NotNull String delegation, @NotNull long tel1, @NotNull long tel2, String mail, @NotNull Set<Police> polices) {
         super(cin, username, password, nom, prenom);
         this.adresse = adresse;
         this.gouvernement = gouvernement;

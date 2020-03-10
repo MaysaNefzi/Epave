@@ -31,10 +31,10 @@ public class EpavisteController {
         return Epav_repo.findAll();
     }
 
-    @GetMapping("/epavisteByCin/{cin}")
+    @GetMapping("/epavisteByCin/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<?> epav_ById(@PathVariable("cin") Long cin) {
-        Optional<Epaviste> epav = Epav_repo.findById(cin);
+    public ResponseEntity<?> epav_ById(@PathVariable("id") Long id) {
+        Optional<Epaviste> epav = Epav_repo.findById(id);
         return epav.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -42,6 +42,12 @@ public class EpavisteController {
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Epaviste> epavByMatr_fisc(@PathVariable String matFisc) {
         return Epav_repo.findAll().stream().filter(x -> x.getMatriculeFiscale().equals(matFisc)).collect(Collectors.toList());
+
+    }
+    @GetMapping("/epavisteByCin/{cin}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Epaviste> epavByCin(@PathVariable String cin) {
+        return Epav_repo.findAll().stream().filter(x -> x.getMatriculeFiscale().equals(cin)).collect(Collectors.toList());
 
     }
 
@@ -55,14 +61,14 @@ public class EpavisteController {
 
     @PutMapping("/modifier_epav/{cin}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Epaviste> modifier_epav(@Valid @RequestBody Epaviste epav, @PathVariable("cin") long cin) {
+    public ResponseEntity<Epaviste> modifier_epav(@Valid @RequestBody Epaviste epav, @PathVariable("id") long id) {
         log.info("Modifier Epaviste", epav);
-        Optional<Epaviste> epavOptional = Epav_repo.findById(cin);
+        Optional<Epaviste> epavOptional = Epav_repo.findById(id);
         if (epavOptional.isEmpty())
             return ResponseEntity.notFound().build();
         Epaviste e = epavOptional.get();
-        e.setId(epav.getId());
-        e.setCin(cin);
+        e.setId(id);
+        e.setCin(epav.getCin());
         e.setMatriculeFiscale(epav.getMatriculeFiscale());
         e.setUsername(epav.getUsername());
         e.setPassword(epav.getPassword());
@@ -73,13 +79,13 @@ public class EpavisteController {
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/supprimer_epav/{cin}")
+    @DeleteMapping("/supprimer_epav/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Boolean> supprimer_epav(@PathVariable Long cin) {
+    public Map<String, Boolean> supprimer_epav(@PathVariable Long id) {
         Epaviste e = null;
         try {
-            e = Epav_repo.findById(cin)
-                    .orElseThrow(() -> new NotFoundException("Epaviste introuvable pour cette cin: " + cin));
+            e = Epav_repo.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Epaviste introuvable pour cet id: " + id));
         } catch (NotFoundException ex) {
             ex.printStackTrace();
         }

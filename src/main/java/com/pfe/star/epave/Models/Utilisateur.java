@@ -13,7 +13,7 @@ public class Utilisateur {
     @Id
     @GeneratedValue
     private Long id;
-    private Long cin;
+    private String cin;
     @NotNull
     private String username;
     @NotNull
@@ -26,7 +26,7 @@ public class Utilisateur {
     public Utilisateur() {
     }
 
-    public Utilisateur(Long cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom) {
+    public Utilisateur(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom) {
         this.cin = cin;
         this.username = username;
         this.password = password;
@@ -42,11 +42,11 @@ public class Utilisateur {
         this.id = id;
     }
 
-    public Long getCin() {
+    public String getCin() {
         return cin;
     }
 
-    public void setCin(Long cin) {
+    public void setCin(String cin) {
         this.cin = cin;
     }
 

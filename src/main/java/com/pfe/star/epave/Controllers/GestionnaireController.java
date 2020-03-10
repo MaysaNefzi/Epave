@@ -31,10 +31,10 @@ public class GestionnaireController {
         return Gest_repo.findAll();
     }
 
-    @GetMapping("/gestionnaire/{cin}")
+    @GetMapping("/gestionnaire/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<?> gest_ById(@PathVariable("cin") Long cin) {
-        Optional<Gestionnaire> gest = Gest_repo.findById(cin);
+    public ResponseEntity<?> gest_ById(@PathVariable("id") Long id) {
+        Optional<Gestionnaire> gest = Gest_repo.findById(id);
         return gest.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -44,6 +44,12 @@ public class GestionnaireController {
         return Gest_repo.findAll().stream().filter(x -> x.getMatricule().equals(mat)).collect(Collectors.toList());
 
     }
+    @GetMapping("/gestBycin/{cin}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Gestionnaire> gestBycin(@PathVariable String cin) {
+        return Gest_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
+
+    }
     @PostMapping("/ajouter_gest")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Gestionnaire> ajouter_gest(@Valid @RequestBody Gestionnaire gest) throws URISyntaxException {
@@ -51,16 +57,16 @@ public class GestionnaireController {
         Gestionnaire result = Gest_repo.save(gest);
         return ResponseEntity.created(new URI("/ajouter_gest" + result.getCin())).body(result);
     }
-    @PutMapping("/modifier_gest/{cin}")
+    @PutMapping("/modifier_gest/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Gestionnaire> modifier_gest(@Valid @RequestBody Gestionnaire gest, @PathVariable("cin") long cin) {
+    public ResponseEntity<Gestionnaire> modifier_gest(@Valid @RequestBody Gestionnaire gest, @PathVariable("id") long id) {
         log.info("Modifier Gestionnaire", gest);
-        Optional<Gestionnaire> gestOptional = Gest_repo.findById(cin);
+        Optional<Gestionnaire> gestOptional = Gest_repo.findById(id);
         if (gestOptional.isEmpty())
             return ResponseEntity.notFound().build();
         Gestionnaire g = gestOptional.get();
         g.setCin(gest.getCin());
-        g.setId(gest.getId());
+        g.setId(id);
         g.setMatricule(gest.getMatricule());
         g.setNom(gest.getNom());
         g.setPrenom(gest.getPrenom());
@@ -70,13 +76,13 @@ public class GestionnaireController {
         Gestionnaire result= Gest_repo.save(g);
         return ResponseEntity.ok().body(result);
     }
-    @DeleteMapping("/supprimer_gest/{cin}")
+    @DeleteMapping("/supprimer_gest/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Boolean> supprimer_gest(@PathVariable Long cin) {
+    public Map<String, Boolean> supprimer_gest(@PathVariable Long id) {
         Gestionnaire g = null;
         try {
-            g = Gest_repo.findById(cin)
-                    .orElseThrow(() -> new NotFoundException("Rapport introuvable pour cette cin: " + cin));
+            g = Gest_repo.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Gestionaire introuvable pour cet id: " + id));
         } catch (NotFoundException ex) {
             ex.printStackTrace();
         }

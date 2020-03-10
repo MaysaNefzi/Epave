@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/expert")
@@ -32,12 +33,17 @@ public class ExpertController {
         return Exp_repo.findAll();
     }
 
-    @GetMapping("/expert/{cin}")
+    @GetMapping("/exp_ById/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<?> ex_ById(@PathVariable("cin") Long cin) {
-        Optional<Expert> exp = Exp_repo.findById(cin);
+    public ResponseEntity<?> exp_ById(@PathVariable("id") Long id) {
+        Optional<Expert> exp = Exp_repo.findById(id);
         return exp.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+    @GetMapping("/exp_ByCin/{cin}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Expert> exp_ByCin(@PathVariable String cin) {
+        return Exp_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
     }
 
     @PostMapping("/ajouter_exp")
@@ -48,14 +54,15 @@ public class ExpertController {
         return ResponseEntity.created(new URI("/ajouter_Exp" + result.getCin())).body(result);
     }
 
-    @PutMapping("/modifier_exp/{cin}")
+    @PutMapping("/modifier_exp/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Expert> modifier_exp(@Valid @RequestBody Expert exp, @PathVariable("cin") long cin) {
+    public ResponseEntity<Expert> modifier_exp(@Valid @RequestBody Expert exp, @PathVariable("id") long id) {
         log.info("Modifier Expert", exp);
-        Optional<Expert> expOptional = Exp_repo.findById(cin);
+        Optional<Expert> expOptional = Exp_repo.findById(id);
         if (expOptional.isEmpty())
             return ResponseEntity.notFound().build();
         Expert e = expOptional.get();
+        e.setId(id);
         e.setCin(exp.getCin());
         e.setId(exp.getId());
         e.setNom(exp.getNom());
@@ -66,13 +73,13 @@ public class ExpertController {
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/supprimer_exp/{cin}")
+    @DeleteMapping("/supprimer_exp/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Boolean> supprimer_exp(@PathVariable Long cin) {
+    public Map<String, Boolean> supprimer_exp(@PathVariable Long id) {
         Expert e = null;
         try {
-            e = Exp_repo.findById(cin)
-                    .orElseThrow(() -> new NotFoundException("Expert introuvable pour cette cin: " + cin));
+            e = Exp_repo.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Expert introuvable pour cet id: " + id));
         } catch (NotFoundException ex) {
             ex.printStackTrace();
         }

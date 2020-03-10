@@ -21,7 +21,7 @@ public class Gestionnaire extends Utilisateur {
     public Gestionnaire() {
     }
 
-    public Gestionnaire(Long cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String matricule, @NotNull Boolean admin, Set<Vente> ventes) {
+    public Gestionnaire(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String matricule, @NotNull Boolean admin, Set<Vente> ventes) {
         super(cin, username, password, nom, prenom);
         this.matricule = matricule;
         this.admin = admin;
