@@ -29,14 +29,13 @@ public class OffreController {
         return Offre_repo.findAll();
     }
 
-    /*@GetMapping("/offre_ById/{id}")
+    @GetMapping("/offre_ById/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> offre_ById(@PathVariable("id") Long id) {
         Optional<Offre> exp = Offre_repo.findById(id);
         return exp.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }*/
-
+    }
     @PostMapping("/ajouter_offre")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Offre> ajouter_offre(@Valid @RequestBody Offre offre) throws URISyntaxException {
@@ -59,6 +58,7 @@ public class OffreController {
         of.setOffreAcceptee(offre.isOffreAcceptee());
         of.setUrlJustificatif(offre.getUrlJustificatif());
         of.setMontant(offre.getMontant());
+        of.setCommentaire(offre.getCommentaire());
         Offre result= Offre_repo.save(of);
         return ResponseEntity.ok().body(result);
     }

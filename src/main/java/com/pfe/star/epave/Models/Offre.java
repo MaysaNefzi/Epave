@@ -24,14 +24,19 @@ public class Offre {
     private double montant;
     private String urlJustificatif;
     private boolean offreAcceptee;
+    private String commentaire;//
 
     public Offre() {
     }
 
-    public Offre(Epaviste epaviste, Vente vente) {
+    public Offre(Epaviste epaviste, Vente vente, LocalDate dateOffre, double montant, String urlJustificatif, boolean offreAcceptee, String commentaire) {
         this.epaviste = epaviste;
         this.vente = vente;
-        this.id = new OffreID(epaviste.getId(), vente.getId());
+        this.dateOffre = dateOffre;
+        this.montant = montant;
+        this.urlJustificatif = urlJustificatif;
+        this.offreAcceptee = offreAcceptee;
+        this.commentaire = commentaire;
     }
 
     public OffreID getId() {
@@ -88,5 +93,13 @@ public class Offre {
 
     public void setOffreAcceptee(boolean offreAcceptee) {
         this.offreAcceptee = offreAcceptee;
+    }
+
+    public String getCommentaire() {
+        return commentaire;
+    }
+
+    public void setCommentaire(String commentaire) {
+        this.commentaire = commentaire;
     }
 }

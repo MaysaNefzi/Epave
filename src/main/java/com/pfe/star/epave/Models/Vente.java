@@ -12,8 +12,6 @@ import java.util.Set;
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Vente extends Sinistre{
     @NotNull
-    private LocalDate dateCreation;
-    @NotNull
     private LocalDate dateDebut;
     @NotNull
     private LocalDate dateFin;
@@ -32,8 +30,7 @@ public class Vente extends Sinistre{
     public Vente() {
     }
 
-    public Vente(@NotNull LocalDate dateCreation, @NotNull LocalDate dateDebut, @NotNull LocalDate dateFin, int duree, @NotNull String description, @NotNull Boolean enchere, double prixDebut, @NotNull Sinistre sinistre, @NotNull Set<Epaviste> epavistes, @NotNull Gestionnaire gestionnaire) {
-        this.dateCreation = dateCreation;
+    public Vente(@NotNull LocalDate dateDebut, @NotNull LocalDate dateFin, int duree, @NotNull String description, @NotNull Boolean enchere, double prixDebut, @NotNull Sinistre sinistre, @NotNull Set<Epaviste> epavistes, @NotNull Gestionnaire gestionnaire) {
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.duree = duree;
@@ -42,14 +39,6 @@ public class Vente extends Sinistre{
         this.prixDebut = prixDebut;
         this.offres = offres;
         this.gestionnaire = gestionnaire;
-    }
-
-    public LocalDate getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(LocalDate dateCreation) {
-        this.dateCreation = dateCreation;
     }
 
     public LocalDate getDateDebut() {

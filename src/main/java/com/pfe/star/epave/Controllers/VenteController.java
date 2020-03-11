@@ -87,7 +87,6 @@ public class VenteController {
         v.setEpave(vente.getEpave());
         v.setModele(vente.getModele());
         v.setValeurVenale(vente.getValeurVenale());
-        v.setDateCreation(vente.getDateCreation());
         v.setDateDebut(vente.getDateDebut());
         v.setDateFin(vente.getDateFin());
         v.setDescription(vente.getDescription());
