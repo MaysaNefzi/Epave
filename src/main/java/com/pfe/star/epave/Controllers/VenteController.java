@@ -37,7 +37,7 @@ public class VenteController {
         return V_repo.findAll();
     }
 
-    @GetMapping("/vente/{id}")
+    @GetMapping("/vente_ById/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> vente_ById(@PathVariable("id") Long id) {
         Optional<Vente> vente = V_repo.findById(id);

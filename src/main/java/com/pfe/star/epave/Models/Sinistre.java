@@ -34,7 +34,8 @@ public class Sinistre {
     @ManyToOne
     @JoinColumn(name="police_id" )
     private Police police;
-    @NotNull    @ManyToOne
+    @NotNull
+    @ManyToOne
     @JoinColumn(name="expert_id" )
     private Expert expert;
     @OneToMany(mappedBy="sinistre", cascade= CascadeType.ALL)

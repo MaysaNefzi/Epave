@@ -17,7 +17,7 @@ import java.util.*;
 
 
 @RestController
-@RequestMapping("/rapport")
+@RequestMapping("/rapport_pre")
 public class RapportController {
     private final Logger log = LoggerFactory.getLogger(RapportController.class);
 
@@ -31,7 +31,7 @@ public class RapportController {
     public Collection<Rapport> liste_rapport_pre(){
         return R_repo.findAll();
     }
-    @GetMapping("/rapport_ById/{id}")
+    @GetMapping("/rapport_pre_ById/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> rapport_ById(@PathVariable Long id){
         Optional<Rapport> rapport = R_repo.findById(id);
@@ -68,9 +68,9 @@ public class RapportController {
         Rapport result = R_repo.save(r);
         return  ResponseEntity.ok().body(result);
     }
-    @DeleteMapping("/supprimer_rapport/{id}")
+    @DeleteMapping("/supprimer_rapport_pre/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Boolean> supprimer_rapport(@PathVariable Long id) {
+    public Map<String, Boolean> supprimer_rapport_pre(@PathVariable Long id) {
         Rapport r = null;
         try {
             r = R_repo.findById(id)

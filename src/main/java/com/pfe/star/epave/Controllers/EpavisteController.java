@@ -31,20 +31,20 @@ public class EpavisteController {
         return Epav_repo.findAll();
     }
 
-    @GetMapping("/epavisteByCin/{id}")
+    @GetMapping("/epav_ById/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> epav_ById(@PathVariable("id") Long id) {
         Optional<Epaviste> epav = Epav_repo.findById(id);
         return epav.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    @GetMapping("/epavisteByMatr_fisc/{matFisc}")
+    @GetMapping("/epav_ByMatr_fisc/{matFisc}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Collection<Epaviste> epavByMatr_fisc(@PathVariable String matFisc) {
+    public Collection<Epaviste> epav_ByMatr_fisc(@PathVariable String matFisc) {
         return Epav_repo.findAll().stream().filter(x -> x.getMatriculeFiscale().equals(matFisc)).collect(Collectors.toList());
 
     }
-    @GetMapping("/epavisteByCin/{cin}")
+    @GetMapping("/epav_ByCin/{cin}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Epaviste> epavByCin(@PathVariable String cin) {
         return Epav_repo.findAll().stream().filter(x -> x.getMatriculeFiscale().equals(cin)).collect(Collectors.toList());
@@ -59,7 +59,7 @@ public class EpavisteController {
         return ResponseEntity.created(new URI("/ajouter_epav" + result.getCin())).body(result);
     }
 
-    @PutMapping("/modifier_epav/{cin}")
+    @PutMapping("/modifier_epav/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Epaviste> modifier_epav(@Valid @RequestBody Epaviste epav, @PathVariable("id") long id) {
         log.info("Modifier Epaviste", epav);

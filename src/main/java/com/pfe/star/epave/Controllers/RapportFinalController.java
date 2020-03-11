@@ -33,9 +33,9 @@ public class RapportFinalController {
     public Collection<RapportFinal> liste_rapport_final(){
         return RF_repo.findAll();
     }
-    @GetMapping("/rapportfinal/{id}")
+    @GetMapping("/rapport_final_ById/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<?> rapport_Final_ById(@PathVariable Long id){
+    public ResponseEntity<?> rapport_final_ById(@PathVariable Long id){
         Optional<RapportFinal> rapportf = RF_repo.findById(id);
         return rapportf.map(response-> ResponseEntity.ok().body(response))
                 .orElse((new ResponseEntity<>(HttpStatus.NOT_FOUND)));

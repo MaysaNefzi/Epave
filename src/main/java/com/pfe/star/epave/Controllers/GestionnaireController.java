@@ -31,22 +31,22 @@ public class GestionnaireController {
         return Gest_repo.findAll();
     }
 
-    @GetMapping("/gestionnaire/{id}")
+    @GetMapping("/gest_ById/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> gest_ById(@PathVariable("id") Long id) {
         Optional<Gestionnaire> gest = Gest_repo.findById(id);
         return gest.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    @GetMapping("/gestByMatr/{mat}")
+    @GetMapping("/gest_ByMatr/{mat}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Collection<Gestionnaire> gestByMatr(@PathVariable String mat) {
+    public Collection<Gestionnaire> gest_ByMatr(@PathVariable String mat) {
         return Gest_repo.findAll().stream().filter(x -> x.getMatricule().equals(mat)).collect(Collectors.toList());
 
     }
-    @GetMapping("/gestBycin/{cin}")
+    @GetMapping("/gest_Bycin/{cin}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Collection<Gestionnaire> gestBycin(@PathVariable String cin) {
+    public Collection<Gestionnaire> gest_Bycin(@PathVariable String cin) {
         return Gest_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
 
     }

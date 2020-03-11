@@ -30,6 +30,7 @@ public class ClientController {
     public Collection<Client> liste_client(){
         return C_repo.findAll();
     }
+
     @GetMapping("/client_ById/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> client_ById(@PathVariable("id") Long id) {

@@ -30,9 +30,9 @@ public class PoliceController {
         return police.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    @GetMapping("/client_ByNumPolice/{nom}")
+    @GetMapping("/police_ByNumPolice/{numeroPolice}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Collection<Police> client_ByNumPolice(@PathVariable String numeroPolice) {
+    public Collection<Police> police_ByNumPolice(@PathVariable String numeroPolice) {
         return Police_repo.findAll().stream().filter(x -> x.getNumPolice().equals(numeroPolice)).collect(Collectors.toList());
 
     }

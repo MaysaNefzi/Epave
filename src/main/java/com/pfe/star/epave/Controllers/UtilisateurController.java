@@ -52,7 +52,7 @@ public class UtilisateurController {
         return U_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
 
     }
-    @PostMapping("/ajouter_utilisateurt")
+    @PostMapping("/ajouter_user")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Utilisateur> ajouter_user(@Valid @RequestBody Utilisateur utilisateur) throws URISyntaxException {
         log.info("Ajouter un nouveau Utilisateur", utilisateur);

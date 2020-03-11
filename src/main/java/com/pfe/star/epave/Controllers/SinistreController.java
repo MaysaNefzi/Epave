@@ -30,7 +30,7 @@ public class SinistreController {
         return Sin_repo.findAll();
     }
 
-    @GetMapping("/sin_ByID/{id}")
+    @GetMapping("/sin_ById/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> sin_ByID(@PathVariable("id") Long id) {
         Optional<Sinistre> sin = Sin_repo.findById(id);
@@ -64,12 +64,12 @@ public class SinistreController {
         return sin.getEpave().equals(!epave);
     }
 
-    @GetMapping("/tt_Epave")
+    @GetMapping("/liste_Epave")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> tt_Epave() {
         return Sin_repo.findAll().stream().filter(this::est_Epave).collect(Collectors.toList());
     }
-    @GetMapping("/tt_nonEpave")
+    @GetMapping("/liste_nonEpave")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> tt_nonEpave() {
         return Sin_repo.findAll().stream().filter(this::non_Epave).collect(Collectors.toList());
