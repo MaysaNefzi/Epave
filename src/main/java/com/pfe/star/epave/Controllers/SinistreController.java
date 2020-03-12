@@ -40,14 +40,14 @@ public class SinistreController {
     @GetMapping("/sin_ByNumPolice/{numeroPolice}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> sin_ByNumPolice(@PathVariable String numeroPolice) {
-        return Sin_repo.findAll().stream().filter(x -> x.getImmatriculation().equals(numeroPolice)).collect(Collectors.toList());
+        return Sin_repo.findAll().stream().filter(x -> x.getPolice().equals(numeroPolice)).collect(Collectors.toList());
 
     }
 
     @GetMapping("/sin_ByNumSinistre/{numeroSinistre}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> sin_ByNumSinistre(@PathVariable String numeroSinistre) {
-        return Sin_repo.findAll().stream().filter(x -> x.getImmatriculation().equals(numeroSinistre)).collect(Collectors.toList());
+        return Sin_repo.findAll().stream().filter(x -> x.getNumeroSinistre().equals(numeroSinistre)).collect(Collectors.toList());
 
     }
 

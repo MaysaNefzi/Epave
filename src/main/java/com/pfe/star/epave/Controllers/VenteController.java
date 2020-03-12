@@ -90,11 +90,13 @@ public class VenteController {
         v.setDateDebut(vente.getDateDebut());
         v.setDateFin(vente.getDateFin());
         v.setDescription(vente.getDescription());
+        v.setDuree(vente.getDuree());
         v.setEnchere(vente.getEnchere());
         v.setPrixDebut(vente.getPrixDebut());
         Vente result= V_repo.save(v);
         return ResponseEntity.ok().body(result);
     }
+    
 
     @DeleteMapping("/supprimer_vente/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
