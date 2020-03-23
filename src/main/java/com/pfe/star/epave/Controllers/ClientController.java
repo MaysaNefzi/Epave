@@ -76,7 +76,6 @@ public class ClientController {
         c.setAdresse(client.getAdresse());
         c.setDelegation(client.getDelegation());
         c.setGouvernement(client.getGouvernement());
-        c.setMail(client.getMail());
         c.setTel1(client.getTel1());
         c.setTel2(client.getTel2());
         Client result= C_repo.save(c);

@@ -21,7 +21,6 @@ public class Client extends Utilisateur {
     private long tel1;
     @NotNull
     private long tel2;
-    private String mail;
     @NotNull
     @OneToMany(mappedBy="client", cascade= CascadeType.ALL)
     private Set<Police>polices = new HashSet<>();
@@ -29,14 +28,13 @@ public class Client extends Utilisateur {
     public Client() {
     }
 
-    public Client(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String adresse, @NotNull String gouvernement, @NotNull String delegation, @NotNull long tel1, @NotNull long tel2, String mail, @NotNull Set<Police> polices) {
-        super(cin, username, password, nom, prenom);
+    public Client(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String email, @NotNull String adresse, @NotNull String gouvernement, @NotNull String delegation, @NotNull long tel1, @NotNull long tel2, @NotNull Set<Police> polices) {
+        super(cin, username, password, nom, prenom, email);
         this.adresse = adresse;
         this.gouvernement = gouvernement;
         this.delegation = delegation;
         this.tel1 = tel1;
         this.tel2 = tel2;
-        this.mail = mail;
         this.polices = polices;
     }
 
@@ -78,14 +76,6 @@ public class Client extends Utilisateur {
 
     public void setTel2(long tel2) {
         this.tel2 = tel2;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
     }
 
     public Set<Police> getPolices() {

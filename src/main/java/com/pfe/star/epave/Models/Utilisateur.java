@@ -22,16 +22,19 @@ public class Utilisateur {
     private String nom;
     @NotNull
     private String prenom;
+    @NotNull
+    private String email;
 
     public Utilisateur() {
     }
 
-    public Utilisateur(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom) {
+    public Utilisateur(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String email) {
         this.cin = cin;
         this.username = username;
         this.password = password;
         this.nom = nom;
         this.prenom = prenom;
+        this.email = email;
     }
 
     public Long getId() {
@@ -80,5 +83,13 @@ public class Utilisateur {
 
     public void setPrenom(String prenom) {
         this.prenom = prenom;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
