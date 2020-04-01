@@ -53,7 +53,7 @@ public class RapportController {
             return ResponseEntity.notFound().build();
         Rapport r= rapportOptional.get();
         r.setId(id);
-        r.setSinistre(rap.getSinistre());
+     //   r.setSinistre(rap.getSinistre());
         r.setValeurVenale(rap.getValeurVenale());
         r.setDegatsConstates(rap.getDegatsConstates());
         r.setEstimationValeurEpave(rap.getEstimationValeurEpave());

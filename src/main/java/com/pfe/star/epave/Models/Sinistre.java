@@ -35,8 +35,10 @@ public class Sinistre {
     @JoinColumn(name="expert_id" )
     private Expert expert;
     @OneToMany(mappedBy="sinistre", cascade= CascadeType.ALL)
+
     private Set<Rapport> rapports=new HashSet<>();
     @OneToMany(mappedBy="sinistre", cascade= CascadeType.ALL)
+    @JsonIgnore
     private Set<Photo> photos= new HashSet<>();
 
     public Sinistre() {

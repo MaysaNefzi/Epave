@@ -1,5 +1,8 @@
 package com.pfe.star.epave.Models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -7,6 +10,7 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 
 @Entity
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Offre {
     @EmbeddedId
     private OffreID id;
@@ -20,14 +24,19 @@ public class Offre {
     private double montant;
     private String urlJustificatif;
     private boolean offreAcceptee;
+    private String commentaire;//
 
     public Offre() {
     }
 
-    public Offre(Epaviste epaviste, Vente vente) {
+    public Offre(Epaviste epaviste, Vente vente, LocalDate dateOffre, double montant, String urlJustificatif, boolean offreAcceptee, String commentaire) {
         this.epaviste = epaviste;
         this.vente = vente;
-        this.id = new OffreID(epaviste.getCin(), vente.getId());
+        this.dateOffre = dateOffre;
+        this.montant = montant;
+        this.urlJustificatif = urlJustificatif;
+        this.offreAcceptee = offreAcceptee;
+        this.commentaire = commentaire;
     }
 
     public OffreID getId() {
@@ -84,5 +93,13 @@ public class Offre {
 
     public void setOffreAcceptee(boolean offreAcceptee) {
         this.offreAcceptee = offreAcceptee;
+    }
+
+    public String getCommentaire() {
+        return commentaire;
+    }
+
+    public void setCommentaire(String commentaire) {
+        this.commentaire = commentaire;
     }
 }

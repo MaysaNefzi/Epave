@@ -1,21 +1,26 @@
 package com.pfe.star.epave.Models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 @Entity
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Vente extends Sinistre{
-    @NotNull
-    private LocalDate dateCreation;
     @NotNull
     private LocalDate dateDebut;
     @NotNull
     private LocalDate dateFin;
+    @NotNull
     private int duree;
     @NotNull
     private String description;
+    @NotNull
     private Boolean enchere;
     private double prixDebut;
     @OneToMany(mappedBy="vente",cascade=CascadeType.ALL)
@@ -23,13 +28,13 @@ public class Vente extends Sinistre{
     @NotNull
     @ManyToOne
     @JoinColumn(name="gestionnaire_id" )
+    @JsonIgnore
     private Gestionnaire gestionnaire;
 
     public Vente() {
     }
 
-    public Vente(@NotNull LocalDate dateCreation, @NotNull LocalDate dateDebut, @NotNull LocalDate dateFin, int duree, @NotNull String description, @NotNull Boolean enchere, double prixDebut, @NotNull Sinistre sinistre, @NotNull Set<Epaviste> epavistes, @NotNull Gestionnaire gestionnaire) {
-        this.dateCreation = dateCreation;
+    public Vente(@NotNull LocalDate dateDebut, @NotNull LocalDate dateFin, int duree, @NotNull String description, @NotNull Boolean enchere, double prixDebut, @NotNull Sinistre sinistre, @NotNull Set<Epaviste> epavistes, @NotNull Gestionnaire gestionnaire) {
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.duree = duree;
@@ -38,14 +43,6 @@ public class Vente extends Sinistre{
         this.prixDebut = prixDebut;
         this.offres = offres;
         this.gestionnaire = gestionnaire;
-    }
-
-    public LocalDate getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(LocalDate dateCreation) {
-        this.dateCreation = dateCreation;
     }
 
     public LocalDate getDateDebut() {

@@ -2,8 +2,13 @@ package com.pfe.star.epave.Repositories;
 
 import com.pfe.star.epave.Models.Offre;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface OffreRepository  extends JpaRepository<Offre,Long> {
+    @Query(value = "SELECT o from Offre o order by  o.montant DESC ")
+    public List<Offre> getOffresoreder();
 }
