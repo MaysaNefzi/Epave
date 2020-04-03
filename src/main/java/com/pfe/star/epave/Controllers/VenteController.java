@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,6 +71,24 @@ public class VenteController {
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Vente> liste_appelOffre() {
         return V_repo.findAll().stream().filter(this::est_AppelOffre).collect(Collectors.toList());
+    }
+    public boolean traitement_encours(Vente v){
+        LocalDate now = LocalDate.now();
+        int x =v.getDateFin().compareTo(now);
+        if(x>0){
+            System.out.println("ss   : "+x);
+            return false;
+        }
+        else {
+            System.out.println("mm   : "+x);
+            return true;
+        }
+    }
+
+    @GetMapping("/traitement")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Vente> traitement() {
+        return V_repo.findAll().stream().filter(this::traitement_encours).collect(Collectors.toList());
     }
 
     @PutMapping("/modifier_vente/{id}")

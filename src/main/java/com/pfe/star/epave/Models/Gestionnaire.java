@@ -1,6 +1,7 @@
 package com.pfe.star.epave.Models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -16,13 +17,14 @@ public class Gestionnaire extends Utilisateur {
     @NotNull
     private boolean admin;
     @OneToMany(mappedBy="gestionnaire", cascade= CascadeType.ALL)
+    @JsonIgnore
     private Set<Vente>ventes=new HashSet<>();
 
     public Gestionnaire() {
     }
 
     public Gestionnaire(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String email, @NotNull String matricule, @NotNull boolean admin, Set<Vente> ventes) {
-        super(cin, username, password, nom, prenom, email);
+        super(cin, username, password, nom, prenom);
         this.matricule = matricule;
         this.admin = admin;
         this.ventes = ventes;

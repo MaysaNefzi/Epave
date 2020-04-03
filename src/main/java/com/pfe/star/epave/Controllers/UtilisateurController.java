@@ -73,7 +73,7 @@ public class UtilisateurController {
         u.setPrenom(utilisateur.getPrenom());
         u.setUsername(utilisateur.getUsername());
         u.setPassword(utilisateur.getPassword());
-        u.setEmail(utilisateur.getEmail());
+       // u.setEmail(utilisateur.getEmail());
         Utilisateur result= U_repo.save(u);
         return ResponseEntity.ok().body(result);
     }

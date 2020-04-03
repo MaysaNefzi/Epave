@@ -29,8 +29,10 @@ public class Police {
     @NotNull
     @ManyToOne
     @JoinColumn(name="client_id" )
+    @JsonIgnore
     private Client client;
     @OneToMany(mappedBy="police", cascade= CascadeType.ALL)
+    @JsonIgnore
     private Set<Sinistre>sinistres;
 
     public Police() {

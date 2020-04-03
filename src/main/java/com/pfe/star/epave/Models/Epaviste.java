@@ -22,7 +22,7 @@ public class Epaviste extends Utilisateur {
     }
 
     public Epaviste(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String email, @NotNull String matriculeFiscale, @NotNull boolean compteActif, Set<Offre> offres) {
-        super(cin, username, password, nom, prenom, email);
+        super(cin, username, password, nom, prenom);
         this.matriculeFiscale = matriculeFiscale;
         this.compteActif = compteActif;
         this.offres = offres;
