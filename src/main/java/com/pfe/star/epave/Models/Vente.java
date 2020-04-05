@@ -1,11 +1,14 @@
 package com.pfe.star.epave.Models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 @Entity
@@ -21,10 +24,12 @@ public class Vente extends Sinistre{
     private Boolean enchere;
     private double prixDebut;
     @OneToMany(mappedBy="vente",cascade=CascadeType.ALL)
+    @JsonIgnore
     private Set<Offre>offres=new HashSet<>();
     @NotNull
     @ManyToOne
     @JoinColumn(name="gestionnaire_id" )
+    @JsonIgnore
     private Gestionnaire gestionnaire;
 
     public Vente() {
@@ -105,4 +110,7 @@ public class Vente extends Sinistre{
     public void setGestionnaire(Gestionnaire gestionnaire) {
         this.gestionnaire = gestionnaire;
     }
+
+
+
 }

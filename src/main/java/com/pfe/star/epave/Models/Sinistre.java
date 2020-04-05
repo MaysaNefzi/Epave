@@ -1,6 +1,7 @@
 package com.pfe.star.epave.Models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -33,10 +34,12 @@ public class Sinistre {
     @NotNull
     @ManyToOne
     @JoinColumn(name="police_id" )
+    @JsonIgnore
     private Police police;
     @NotNull
     @ManyToOne
     @JoinColumn(name="expert_id" )
+    @JsonIgnore
     private Expert expert;
     @OneToMany(mappedBy="sinistre", cascade= CascadeType.ALL)
     private Set<Rapport> rapports=new HashSet<>();

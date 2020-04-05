@@ -1,6 +1,7 @@
 package com.pfe.star.epave.Models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.EmbeddedId;
@@ -16,6 +17,7 @@ public class Offre {
     private OffreID id;
     @ManyToOne(optional=false)
     @JoinColumn(name="epaviste_id",referencedColumnName = "id",insertable = false,updatable = false)
+
     private Epaviste epaviste;
     @ManyToOne(optional=false)
     @JoinColumn(name="vente_id",referencedColumnName = "id",insertable = false,updatable = false)
