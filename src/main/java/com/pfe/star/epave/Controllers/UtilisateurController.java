@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,6 +26,8 @@ public class UtilisateurController {
     private final Logger log = LoggerFactory.getLogger(UtilisateurController.class);
     @Autowired
     private final UtilisateurRepository U_repo;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     public UtilisateurController(UtilisateurRepository u_repo){
         U_repo = u_repo;
     }
@@ -56,6 +59,8 @@ public class UtilisateurController {
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Utilisateur> ajouter_user(@Valid @RequestBody Utilisateur utilisateur) throws URISyntaxException {
         log.info("Ajouter un nouveau Utilisateur", utilisateur);
+        String hashPW=bCryptPasswordEncoder.encode(utilisateur.getPassword());
+        utilisateur.setPassword(hashPW);
         Utilisateur result = U_repo.save(utilisateur);
         return ResponseEntity.created(new URI("/ajouter_utilisateur" + result.getCin())).body(result);
     }
