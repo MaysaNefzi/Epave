@@ -46,6 +46,8 @@ public class Sinistre {
     @OneToMany(mappedBy="sinistre", cascade= CascadeType.ALL)
     private Set<Photo> photos= new HashSet<>();
 
+    @OneToOne(mappedBy = "sinistre")
+    private Vente vente;
     public Sinistre() {
     }
 

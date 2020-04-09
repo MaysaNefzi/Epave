@@ -17,8 +17,8 @@ public class Expert extends Utilisateur {
     public Expert() {
     }
 
-    public Expert(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String role, Set<Sinistre> sinistres) {
-        super(cin, username, password, nom, prenom, role);
+    public Expert(String cin, @NotNull String username, @NotNull String password, @NotNull String email,@NotNull String nom, @NotNull String prenom, @NotNull String role, Set<Sinistre> sinistres) {
+        super(cin, username, password,email, nom, prenom, role);
         this.sinistres = sinistres;
     }
 

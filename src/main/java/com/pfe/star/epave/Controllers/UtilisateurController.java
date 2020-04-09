@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/utilisateur")
+@RequestMapping("/user")
 public class UtilisateurController {
     private final Logger log = LoggerFactory.getLogger(UtilisateurController.class);
     @Autowired
@@ -78,8 +78,7 @@ public class UtilisateurController {
         u.setPrenom(utilisateur.getPrenom());
         u.setUsername(utilisateur.getUsername());
         u.setPassword(utilisateur.getPassword());
-        u.setRole(utilisateur.getRole());
-       // u.setEmail(utilisateur.getEmail());
+        u.setEmail(utilisateur.getEmail());
         Utilisateur result= U_repo.save(u);
         return ResponseEntity.ok().body(result);
     }

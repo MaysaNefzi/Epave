@@ -13,7 +13,10 @@ import java.util.HashSet;
 import java.util.Set;
 @Entity
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
-public class Vente extends Sinistre{
+public class Vente {
+    @Id
+    @GeneratedValue
+    private Long id;
     @NotNull
     private LocalDate dateDebut;
     @NotNull
@@ -21,6 +24,7 @@ public class Vente extends Sinistre{
     private int duree;
     @NotNull
     private String description;
+    @NotNull
     private Boolean enchere;
     private double prixDebut;
     @OneToMany(mappedBy="vente",cascade=CascadeType.ALL)
@@ -31,6 +35,10 @@ public class Vente extends Sinistre{
     @JoinColumn(name="gestionnaire_id" )
     @JsonIgnore
     private Gestionnaire gestionnaire;
+    @NotNull
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sinistre_id", referencedColumnName = "id")
+    private Sinistre sinistre;
 
     public Vente() {
     }
@@ -44,6 +52,13 @@ public class Vente extends Sinistre{
         this.prixDebut = prixDebut;
         this.offres = offres;
         this.gestionnaire = gestionnaire;
+    }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDate getDateDebut() {

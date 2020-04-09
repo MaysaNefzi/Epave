@@ -56,10 +56,9 @@ public class VenteController {
         return ResponseEntity.created(new URI("/ajouter_vente" + result.getId())).body(result);
     }
     private boolean est_Enchere(Vente sin) {
-        return sin.getEpave().equals(enchere);
+        return sin.getEnchere().equals(enchere);
     }
-    private boolean est_AppelOffre(Vente sin){
-        return sin.getEpave().equals(!enchere);
+    private boolean est_AppelOffre(Vente sin){return sin.getEnchere().equals(!enchere);
     }
 
     @GetMapping("/liste_enchere")
@@ -100,14 +99,6 @@ public class VenteController {
             return ResponseEntity.notFound().build();
         Vente v = venteOptional.get();
         v.setId(id);
-        v.setNumeroSinistre(vente.getNumeroSinistre());
-        v.setImmatriculation(vente.getImmatriculation());
-        v.setDateAccident(vente.getDateAccident());
-        v.setNumChassis(vente.getNumChassis());
-        v.setMarque(vente.getMarque());
-        v.setEpave(vente.getEpave());
-        v.setModele(vente.getModele());
-        v.setValeurVenale(vente.getValeurVenale());
         v.setDateDebut(vente.getDateDebut());
         v.setDateFin(vente.getDateFin());
         v.setDescription(vente.getDescription());
