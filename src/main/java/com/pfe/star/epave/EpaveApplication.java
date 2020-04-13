@@ -25,7 +25,7 @@ public class EpaveApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		compteService.saveUser(new Utilisateur("1234567","admin","1234","maysa","may","ADMIN","maysa@gmail.com"));
+		//compteService.saveUser(new Utilisateur("1234567","admin","1234","maysa","may","ADMIN","maysa@gmail.com"));
 
 	}
 }

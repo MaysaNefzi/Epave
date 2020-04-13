@@ -30,7 +30,7 @@ public class ExpertController {
     @GetMapping("/liste_exp")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Expert> liste_exp(){
-        return Exp_repo.findAll();
+        return Exp_repo.getAllExp();
     }
 
     @GetMapping("/exp_ById/{id}")

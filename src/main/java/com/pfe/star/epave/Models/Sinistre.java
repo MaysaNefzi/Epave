@@ -45,7 +45,7 @@ public class Sinistre {
     private Set<Rapport> rapports=new HashSet<>();
     @OneToMany(mappedBy="sinistre", cascade= CascadeType.ALL)
     private Set<Photo> photos= new HashSet<>();
-
+    @JsonIgnore
     @OneToOne(mappedBy = "sinistre")
     private Vente vente;
     public Sinistre() {

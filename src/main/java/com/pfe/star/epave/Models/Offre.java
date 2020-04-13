@@ -3,11 +3,14 @@ package com.pfe.star.epave.Models;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -22,11 +25,15 @@ public class Offre {
     @ManyToOne(optional=false)
     @JoinColumn(name="vente_id",referencedColumnName = "id",insertable = false,updatable = false)
     private Vente vente;
+    @NotNull
     private LocalDate dateOffre;
+    @NotNull
     private double montant;
+    @NotNull
     private String urlJustificatif;
-    private boolean offreAcceptee;
-    private String commentaire;//
+    @NotNull
+    private boolean offreAcceptee =false ;
+    private String commentaire;
 
     public Offre() {
     }

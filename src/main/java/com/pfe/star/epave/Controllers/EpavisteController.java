@@ -28,7 +28,7 @@ public class EpavisteController {
     @GetMapping("/liste_epav")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Epaviste> liste_epav(){
-        return Epav_repo.findAll();
+        return Epav_repo.getAllEpv();
     }
 
     @GetMapping("/epav_ById/{id}")

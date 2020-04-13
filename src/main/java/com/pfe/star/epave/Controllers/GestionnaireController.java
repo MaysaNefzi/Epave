@@ -28,7 +28,7 @@ public class GestionnaireController {
     @GetMapping("/liste_gest")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Gestionnaire> liste_gest(){
-        return Gest_repo.findAll();
+        return Gest_repo.getAllGest();
     }
 
     @GetMapping("/gest_ById/{id}")
