@@ -25,6 +25,7 @@ public class GestionnaireController {
     public GestionnaireController(GestionnaireRepository gest_repo){
         Gest_repo=gest_repo;
     }
+
     @GetMapping("/liste_gest")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Gestionnaire> liste_gest(){

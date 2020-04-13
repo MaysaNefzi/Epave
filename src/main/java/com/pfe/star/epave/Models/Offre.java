@@ -1,3 +1,4 @@
+
 package com.pfe.star.epave.Models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
