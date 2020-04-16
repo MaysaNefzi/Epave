@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,8 +22,8 @@ public class Epaviste extends Utilisateur {
     public Epaviste() {
     }
 
-    public Epaviste(String cin, @NotNull String username, @NotNull String password, @NotNull String email,@NotNull String nom, @NotNull String prenom, @NotNull String role, @NotNull String matriculeFiscale, @NotNull boolean compteActif, Set<Offre> offres) {
-        super(cin, username, password,email, nom, prenom, role);
+    public Epaviste(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @Email String email, @NotNull String matriculeFiscale, @NotNull boolean compteActif, Set<Offre> offres) {
+        super(cin, username, password, nom, prenom, email);
         this.matriculeFiscale = matriculeFiscale;
         this.compteActif = compteActif;
         this.offres = offres;

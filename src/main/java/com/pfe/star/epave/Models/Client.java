@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,8 +29,8 @@ public class Client extends Utilisateur {
     public Client() {
     }
 
-    public Client(String cin, @NotNull String username, @NotNull String password,@NotNull String email, @NotNull String nom, @NotNull String prenom, @NotNull String role, @NotNull String adresse, @NotNull String gouvernement, @NotNull String delegation, @NotNull long tel1, @NotNull long tel2, @NotNull Set<Police> polices) {
-        super(cin, username, password, nom, email,prenom, role);
+    public Client(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @Email String email, @NotNull String adresse, @NotNull String gouvernement, @NotNull String delegation, @NotNull long tel1, @NotNull long tel2, @NotNull Set<Police> polices) {
+        super(cin, username, password, nom, prenom, email);
         this.adresse = adresse;
         this.gouvernement = gouvernement;
         this.delegation = delegation;

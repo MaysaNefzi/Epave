@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,8 +18,8 @@ public class Expert extends Utilisateur {
     public Expert() {
     }
 
-    public Expert(String cin, @NotNull String username, @NotNull String password, @NotNull String email,@NotNull String nom, @NotNull String prenom, @NotNull String role, Set<Sinistre> sinistres) {
-        super(cin, username, password,email, nom, prenom, role);
+    public Expert(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @Email String email, Set<Sinistre> sinistres) {
+        super(cin, username, password, nom, prenom, email);
         this.sinistres = sinistres;
     }
 

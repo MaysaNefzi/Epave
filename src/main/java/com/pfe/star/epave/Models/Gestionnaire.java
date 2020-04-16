@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,8 +24,8 @@ public class Gestionnaire extends Utilisateur {
     public Gestionnaire() {
     }
 
-    public Gestionnaire(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String email,@NotNull String prenom, @NotNull String role, @NotNull String matricule, @NotNull boolean admin, Set<Vente> ventes) {
-        super(cin, username, password, nom, email,prenom, role);
+    public Gestionnaire(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @Email String email, @NotNull String matricule, @NotNull boolean admin, Set<Vente> ventes) {
+        super(cin, username, password, nom, prenom, email);
         this.matricule = matricule;
         this.admin = admin;
         this.ventes = ventes;
