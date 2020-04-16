@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +23,8 @@ public class GestionnaireController {
     private final Logger log = LoggerFactory.getLogger(GestionnaireController.class);
     @Autowired
     private final GestionnaireRepository Gest_repo;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     public GestionnaireController(GestionnaireRepository gest_repo){
         Gest_repo=gest_repo;
     }
@@ -55,6 +58,8 @@ public class GestionnaireController {
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Gestionnaire> ajouter_gest(@Valid @RequestBody Gestionnaire gest) throws URISyntaxException {
         log.info("Ajouter un nouveau gestionnaire", gest);
+        String hashPW=bCryptPasswordEncoder.encode(gest.getPassword());
+        gest.setPassword(hashPW);
         Gestionnaire result = Gest_repo.save(gest);
         return ResponseEntity.created(new URI("/ajouter_gest" + result.getCin())).body(result);
     }

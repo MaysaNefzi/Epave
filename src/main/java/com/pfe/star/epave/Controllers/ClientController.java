@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +23,8 @@ public class ClientController {
     private final Logger log = LoggerFactory.getLogger(ClientController.class);
     @Autowired
     private final ClientRepository C_repo;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     public ClientController(ClientRepository c_repo){
         C_repo = c_repo;
     }
@@ -55,6 +58,8 @@ public class ClientController {
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Client> ajouter_compte_client(@Valid @RequestBody Client client) throws URISyntaxException {
         log.info("Créer un compte client", client);
+        String hashPW=bCryptPasswordEncoder.encode(client.getPassword());
+        client.setPassword(hashPW);
         Client result = C_repo.save(client);
         return ResponseEntity.created(new URI("/ajouter_compte_client" + result.getCin())).body(result);
     }

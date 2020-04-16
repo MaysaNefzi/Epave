@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
@@ -21,6 +22,8 @@ public class EpavisteController {
     private final Logger log = LoggerFactory.getLogger(EpavisteController.class);
     @Autowired
     private final EpavisteRepository Epav_repo;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     public EpavisteController(EpavisteRepository epav_repo){
         Epav_repo=epav_repo;
     }
@@ -55,6 +58,8 @@ public class EpavisteController {
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Epaviste> ajouter_epav(@Valid @RequestBody Epaviste epav) throws URISyntaxException {
         log.info("Ajouter un nouveau Epaviste", epav);
+        String hashPW=bCryptPasswordEncoder.encode(epav.getPassword());
+        epav.setPassword(hashPW);
         Epaviste result = Epav_repo.save(epav);
         return ResponseEntity.created(new URI("/ajouter_epav" + result.getCin())).body(result);
     }

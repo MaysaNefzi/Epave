@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/user")
 public class UtilisateurController {
     private final Logger log = LoggerFactory.getLogger(UtilisateurController.class);
@@ -57,8 +58,9 @@ public class UtilisateurController {
     @GetMapping("/user_ByEmail/{email}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Utilisateur> user_ByEmail(@PathVariable String email) {
-        return U_repo.findAll().stream().filter(x -> x.getUsername().equals(email)).collect(Collectors.toList());
+        return U_repo.findAll().stream().filter(x -> x.getEmail().equals(email)).collect(Collectors.toList());
     }
+
     @PostMapping("/ajouter_user")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Utilisateur> ajouter_user(@Valid @RequestBody Utilisateur utilisateur) throws URISyntaxException {

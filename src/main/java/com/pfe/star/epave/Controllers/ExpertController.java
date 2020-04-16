@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,7 +27,8 @@ public class ExpertController {
     public ExpertController(ExpertRepository exp_repo){
         Exp_repo=exp_repo;
     }
-
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @GetMapping("/liste_exp")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Expert> liste_exp(){
@@ -50,6 +52,8 @@ public class ExpertController {
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Expert> ajouter_exp(@Valid @RequestBody Expert exp) throws URISyntaxException {
         log.info("Ajouter un nouveau Expert", exp);
+        String hashPW=bCryptPasswordEncoder.encode(exp.getPassword());
+        exp.setPassword(hashPW);
         Expert result = Exp_repo.save(exp);
         return ResponseEntity.created(new URI("/ajouter_Exp" + result.getCin())).body(result);
     }
