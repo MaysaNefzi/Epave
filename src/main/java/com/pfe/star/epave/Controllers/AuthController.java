@@ -93,49 +93,19 @@ public class AuthController {
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
-        if (strRoles != null) {
-
-
+        if (strRoles != null){
             strRoles.forEach(role -> {
-                switch (role) {
-                    case "client":
+
+                if(role=="client"){
                         Role clientRole = roleRepository.findByName(ERole.ROLE_CLT)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(clientRole);
 
-                        break;
-                    case "gestionnaire":
-                        Role gestRole = roleRepository.findByName(ERole.ROLE_GEST)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(gestRole);
-
-                        break;
-
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
-                    case "epaviste":
-                        Role epvRole = roleRepository.findByName(ERole.ROLE_EPV)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(epvRole);
-
-                        break;
-                    case "expert":
-                        Role expRole = roleRepository.findByName(ERole.ROLE_EXP)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(expRole);
-
-                        break;
+                    utilisateur.setRoles(roles);
+                    userRepository.save(utilisateur);
                 }
             });
         }
-
-        utilisateur.setRoles(roles);
-        userRepository.save(utilisateur);
-
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }

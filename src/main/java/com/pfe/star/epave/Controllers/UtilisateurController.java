@@ -1,7 +1,12 @@
 package com.pfe.star.epave.Controllers;
 
+import com.pfe.star.epave.Models.ERole;
+import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Models.Utilisateur;
+import com.pfe.star.epave.Repositories.RoleRepository;
 import com.pfe.star.epave.Repositories.UtilisateurRepository;
+import com.pfe.star.epave.Security.Payload.Request.SignupRequest;
+import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,15 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,7 +30,10 @@ public class UtilisateurController {
     @Autowired
     private final UtilisateurRepository U_repo;
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    PasswordEncoder encoder;
+    @Autowired
+    RoleRepository roleRepository;
+
     public UtilisateurController(UtilisateurRepository u_repo){
         U_repo = u_repo;
     }
@@ -59,14 +65,75 @@ public class UtilisateurController {
     public Collection<Utilisateur> user_ByEmail(@PathVariable String email) {
         return U_repo.findAll().stream().filter(x -> x.getUsername().equals(email)).collect(Collectors.toList());
     }
-    @PostMapping("/ajouter_user")
+    /*@PostMapping("/ajouter_user")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Utilisateur> ajouter_user(@Valid @RequestBody Utilisateur utilisateur) throws URISyntaxException {
         log.info("Ajouter un nouveau Utilisateur", utilisateur);
-        String hashPW=bCryptPasswordEncoder.encode(utilisateur.getPassword());
+        String hashPW=encoder.encode(utilisateur.getPassword());
         utilisateur.setPassword(hashPW);
+
         Utilisateur result = U_repo.save(utilisateur);
         return ResponseEntity.created(new URI("/ajouter_utilisateur" + result.getCin())).body(result);
+    }*/
+    @PostMapping("/ajouter_user")
+    public ResponseEntity<?> ajouter_user(@Valid @RequestBody SignupRequest signUpRequest) {
+
+        if (U_repo.existsByUsername(signUpRequest.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username is already taken!"));
+        }
+        if (U_repo.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));
+        }
+        Utilisateur utilisateur = new Utilisateur(signUpRequest.getCin(),
+                signUpRequest.getUsername(),
+                encoder.encode((signUpRequest.getPassword())),
+                signUpRequest.getNom(),
+                signUpRequest.getPrenom(),
+                signUpRequest.getEmail());
+        Set<String> strRoles = signUpRequest.getRole();
+        Set<Role> roles = new HashSet<>();
+        if (strRoles != null){
+
+            strRoles.forEach(role -> {
+                switch (role) {
+                    case "gestionnaire":
+                        Role gestRole = roleRepository.findByName(ERole.ROLE_GEST)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(gestRole);
+                        utilisateur.setRoles(roles);
+                        U_repo.save(utilisateur);
+                        break;
+                    case "admin":
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(adminRole);
+                        utilisateur.setRoles(roles);
+                        U_repo.save(utilisateur);
+
+                        break;
+                    case "epaviste":
+                        Role epvRole = roleRepository.findByName(ERole.ROLE_EPV)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(epvRole);
+                        utilisateur.setRoles(roles);
+                        U_repo.save(utilisateur);
+
+                        break;
+                    case "expert":
+                        Role expRole = roleRepository.findByName(ERole.ROLE_EXP)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(expRole);
+                        utilisateur.setRoles(roles);
+                        U_repo.save(utilisateur);
+                        break;
+                }
+            });
+        }
+        return ResponseEntity.ok().body(utilisateur);
     }
     @PutMapping("/modifier_user/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
@@ -81,8 +148,7 @@ public class UtilisateurController {
         u.setNom(utilisateur.getNom());
         u.setPrenom(utilisateur.getPrenom());
         u.setUsername(utilisateur.getUsername());
-        String hashPW=bCryptPasswordEncoder.encode(utilisateur.getPassword());
-      //  utilisateur.setPassword(hashPW);
+        String hashPW=encoder.encode(utilisateur.getPassword());
         u.setPassword(hashPW);
         u.setEmail(utilisateur.getEmail());
         Utilisateur result= U_repo.save(u);
