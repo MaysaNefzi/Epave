@@ -38,30 +38,30 @@ public class UtilisateurController {
         U_repo = u_repo;
     }
     @GetMapping("/liste_user")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*")
     public Collection<Utilisateur> liste_user(){
         return U_repo.findAll();
     }
     @GetMapping("/user_ById/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> user_ById(@PathVariable("id") Long id) {
         Optional<Utilisateur> utilisateur = U_repo.findById(id);
         return utilisateur.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     @GetMapping("/user_ByNom/{username}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*")
     public Collection<Utilisateur> user_ByNom(@PathVariable String username) {
         return U_repo.findAll().stream().filter(x -> x.getUsername().equals(username)).collect(Collectors.toList());
     }
     @GetMapping("/user_ByCin/{cin}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*")
     public Collection<Utilisateur> user_ByCin(@PathVariable String cin) {
         return U_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
     }
 
     @GetMapping("/user_ByEmail/{email}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*")
     public Collection<Utilisateur> user_ByEmail(@PathVariable String email) {
         return U_repo.findAll().stream().filter(x -> x.getUsername().equals(email)).collect(Collectors.toList());
     }
@@ -130,13 +130,20 @@ public class UtilisateurController {
                         utilisateur.setRoles(roles);
                         U_repo.save(utilisateur);
                         break;
+                    case "client":
+                        Role cRole = roleRepository.findByName(ERole.ROLE_CLT)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(cRole);
+                        utilisateur.setRoles(roles);
+                        U_repo.save(utilisateur);
+                        break;
                 }
             });
         }
         return ResponseEntity.ok().body(utilisateur);
     }
     @PutMapping("/modifier_user/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<Utilisateur> modifier_user(@Valid @RequestBody Utilisateur utilisateur, @PathVariable("id") long id) {
         log.info("Modifier Utilisateur", utilisateur);
         Optional<Utilisateur> userOptional = U_repo.findById(id);
@@ -155,7 +162,7 @@ public class UtilisateurController {
         return ResponseEntity.ok().body(result);
     }
     @DeleteMapping("/supprimer_user/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*")
     public Map<String, Boolean> supprimer_user(@PathVariable Long id) {
         Utilisateur u = null;
         try {

@@ -16,6 +16,7 @@ public class Utilisateur {
     @Id
     @GeneratedValue
     private Long id;
+    @NotNull
     private String cin;
     @NotNull
     private String username;
@@ -31,6 +32,7 @@ public class Utilisateur {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles=new HashSet<>();
     @Email
+    @NotNull
     private String email;
 
     public Utilisateur() {

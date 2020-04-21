@@ -1,7 +1,10 @@
 package com.pfe.star.epave.Controllers;
 
+import com.pfe.star.epave.Models.ERole;
 import com.pfe.star.epave.Models.Epaviste;
+import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Repositories.EpavisteRepository;
+import com.pfe.star.epave.Repositories.RoleRepository;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +30,8 @@ public class EpavisteController {
     public EpavisteController(EpavisteRepository epav_repo){
         Epav_repo=epav_repo;
     }
-
+    @Autowired
+    RoleRepository roleRepository;
     @GetMapping("/liste_epav")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Epaviste> liste_epav(){
@@ -60,6 +64,11 @@ public class EpavisteController {
         log.info("Ajouter un nouveau Epaviste", epav);
         String hashPW=bCryptPasswordEncoder.encode(epav.getPassword());
         epav.setPassword(hashPW);
+        Set<Role> roles = new HashSet<>();
+        Role epavRole = roleRepository.findByName(ERole.ROLE_EXP)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(epavRole);
+        epav.setRoles(roles);
         Epaviste result = Epav_repo.save(epav);
         return ResponseEntity.created(new URI("/ajouter_epav" + result.getCin())).body(result);
     }

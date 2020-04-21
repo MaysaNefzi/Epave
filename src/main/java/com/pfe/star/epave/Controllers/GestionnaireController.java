@@ -1,7 +1,10 @@
 package com.pfe.star.epave.Controllers;
 
+import com.pfe.star.epave.Models.ERole;
 import com.pfe.star.epave.Models.Gestionnaire;
+import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Repositories.GestionnaireRepository;
+import com.pfe.star.epave.Repositories.RoleRepository;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +31,8 @@ public class GestionnaireController {
     public GestionnaireController(GestionnaireRepository gest_repo){
         Gest_repo=gest_repo;
     }
+    @Autowired
+    RoleRepository roleRepository;
 
     @GetMapping("/liste_gest")
     @CrossOrigin(origins = "http://localhost:4200")
@@ -57,9 +62,14 @@ public class GestionnaireController {
     @PostMapping("/ajouter_gest")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Gestionnaire> ajouter_gest(@Valid @RequestBody Gestionnaire gest) throws URISyntaxException {
+        Set<Role> roles = new HashSet<>();
         log.info("Ajouter un nouveau gestionnaire", gest);
         String hashPW=bCryptPasswordEncoder.encode(gest.getPassword());
         gest.setPassword(hashPW);
+        Role gestRole = roleRepository.findByName(ERole.ROLE_GEST)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(gestRole);
+        gest.setRoles(roles);
         Gestionnaire result = Gest_repo.save(gest);
         return ResponseEntity.created(new URI("/ajouter_gest" + result.getCin())).body(result);
     }
@@ -76,7 +86,6 @@ public class GestionnaireController {
         g.setMatricule(gest.getMatricule());
         g.setNom(gest.getNom());
         g.setPrenom(gest.getPrenom());
-        g.setAdmin(gest.isAdmin());
         g.setUsername(gest.getUsername());
         g.setPassword(gest.getPassword());
         Gestionnaire result= Gest_repo.save(g);

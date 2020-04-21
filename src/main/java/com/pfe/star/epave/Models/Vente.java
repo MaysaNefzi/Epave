@@ -17,10 +17,11 @@ public class Vente {
     @Id
     @GeneratedValue
     private Long id;
-    @NotNull
+  //  @NotNull
     private LocalDate dateDebut;
-    @NotNull
+//    @NotNull
     private LocalDate dateFin;
+    @NotNull
     private int duree;
     @NotNull
     private String description;

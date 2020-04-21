@@ -1,7 +1,10 @@
 package com.pfe.star.epave.Controllers;
 
+import com.pfe.star.epave.Models.ERole;
 import com.pfe.star.epave.Models.Expert;
+import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Repositories.ExpertRepository;
+import com.pfe.star.epave.Repositories.RoleRepository;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +32,9 @@ public class ExpertController {
     }
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    RoleRepository roleRepository;
+
     @GetMapping("/liste_exp")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Expert> liste_exp(){
@@ -52,8 +58,13 @@ public class ExpertController {
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Expert> ajouter_exp(@Valid @RequestBody Expert exp) throws URISyntaxException {
         log.info("Ajouter un nouveau Expert", exp);
+        Set<Role> roles = new HashSet<>();
         String hashPW=bCryptPasswordEncoder.encode(exp.getPassword());
         exp.setPassword(hashPW);
+        Role expRole = roleRepository.findByName(ERole.ROLE_EXP)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(expRole);
+        exp.setRoles(roles);
         Expert result = Exp_repo.save(exp);
         return ResponseEntity.created(new URI("/ajouter_Exp" + result.getCin())).body(result);
     }

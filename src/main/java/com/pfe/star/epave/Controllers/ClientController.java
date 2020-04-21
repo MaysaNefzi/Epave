@@ -1,7 +1,10 @@
 package com.pfe.star.epave.Controllers;
 
 import com.pfe.star.epave.Models.Client;
+import com.pfe.star.epave.Models.ERole;
+import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Repositories.ClientRepository;
+import com.pfe.star.epave.Repositories.RoleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,9 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,6 +30,8 @@ public class ClientController {
     private final ClientRepository C_repo;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    RoleRepository roleRepository;
     public ClientController(ClientRepository c_repo){
         C_repo = c_repo;
     }
@@ -60,6 +67,11 @@ public class ClientController {
         log.info("Créer un compte client", client);
         String hashPW=bCryptPasswordEncoder.encode(client.getPassword());
         client.setPassword(hashPW);
+        Set<Role> roles = new HashSet<>();
+        Role cRole = roleRepository.findByName(ERole.ROLE_CLT)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(cRole);
+        client.setRoles(roles);
         Client result = C_repo.save(client);
         return ResponseEntity.created(new URI("/ajouter_compte_client" + result.getCin())).body(result);
     }

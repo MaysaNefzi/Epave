@@ -15,8 +15,7 @@ import java.util.Set;
 public class Gestionnaire extends Utilisateur {
     @NotNull
     private String matricule;
-    @NotNull
-    private boolean admin;
+
     @OneToMany(mappedBy="gestionnaire", cascade= CascadeType.ALL)
     @JsonIgnore
     private Set<Vente>ventes=new HashSet<>();
@@ -24,10 +23,9 @@ public class Gestionnaire extends Utilisateur {
     public Gestionnaire() {
     }
 
-    public Gestionnaire(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @Email String email, @NotNull String matricule, @NotNull boolean admin, Set<Vente> ventes) {
+    public Gestionnaire(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @Email String email, @NotNull String matricule,  Set<Vente> ventes) {
         super(cin, username, password, nom, prenom, email);
         this.matricule = matricule;
-        this.admin = admin;
         this.ventes = ventes;
     }
 
@@ -37,14 +35,6 @@ public class Gestionnaire extends Utilisateur {
 
     public void setMatricule(String matricule) {
         this.matricule = matricule;
-    }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        this.admin = admin;
     }
 
     public Set<Vente> getVentes() {
