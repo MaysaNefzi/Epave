@@ -14,5 +14,4 @@ public interface ExpertRepository  extends JpaRepository<Expert,Long> {
     @Query(value = "SELECT e from Expert e order by e.nom DESC ")
     public List<Expert> getAllExp();
     Boolean existsByUsername(String username);
-    Boolean existsByEmail(String email);
 }

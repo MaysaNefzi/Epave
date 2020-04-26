@@ -18,7 +18,9 @@ public class Utilisateur {
     @GeneratedValue
     private Long id;
     @NotNull
+    @Column(unique = true)
     private String cin;
+    @Email
     @NotNull
     private String username;
     @NotNull
@@ -33,28 +35,23 @@ public class Utilisateur {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @JsonIgnore
     private Set<Role> roles=new HashSet<>();
-    @Email
-    @NotNull
-    private String email;
 
     public Utilisateur() {
     }
 
 
-    public Utilisateur(@NotNull String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom,  @Email @NotNull String email) {
+    public Utilisateur(@NotNull String cin,@Email @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom) {
         this.cin = cin;
         this.username = username;
         this.password = password;
         this.nom = nom;
         this.prenom = prenom;
-        this.email = email;
     }
 
-    public Utilisateur(Long id, @NotNull String username, @NotNull String password, @Email @NotNull String email) {
+    public Utilisateur(Long id, @Email @NotNull String username, @NotNull String password) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.email = email;
     }
 
     public Long getId() {
@@ -103,14 +100,6 @@ public class Utilisateur {
 
     public void setPrenom(String prenom) {
         this.prenom = prenom;
-    }
-
-   public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Set<Role> getRoles() {

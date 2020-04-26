@@ -38,6 +38,7 @@ public class AuthController {
     AuthenticationManager authenticationManager;
     private final Logger log = LoggerFactory.getLogger(UtilisateurController.class);
 
+
     @Autowired
     UtilisateurRepository userRepository;
 
@@ -70,7 +71,6 @@ public class AuthController {
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getPassword(),
-                userDetails.getEmail(),
                 roles));
     }
 
@@ -83,17 +83,11 @@ public class AuthController {
                     .body(new MessageResponse("Error: Username is already taken!"));
         }
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
         Utilisateur utilisateur=new Utilisateur(signUpRequest.getCin(),
                 signUpRequest.getUsername(),
                 encoder.encode((signUpRequest.getPassword())),
                 signUpRequest.getNom(),
-                signUpRequest.getPrenom(),
-                signUpRequest.getEmail());
+                signUpRequest.getPrenom());
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();

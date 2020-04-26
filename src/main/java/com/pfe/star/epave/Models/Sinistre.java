@@ -18,13 +18,16 @@ public class Sinistre {
     @GeneratedValue
     private Long id;
     @NotNull
+    @Column(unique = true)
     private String numeroSinistre;
     @NotNull
+    @Column(unique =true )
     private String immatriculation;
     @NotNull
     @JsonFormat(pattern = "MM/dd/yyyy")
     private LocalDate dateAccident;
     @NotNull
+    @Column(unique = true)
     private String numChassis;
     @NotNull
     private String marque;

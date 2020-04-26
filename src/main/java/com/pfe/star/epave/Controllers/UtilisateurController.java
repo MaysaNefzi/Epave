@@ -49,22 +49,19 @@ public class UtilisateurController {
         return utilisateur.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-   /* @GetMapping("/user_ByNom/{username}")
+    @GetMapping("/user_ByNom/{username}")
     @CrossOrigin(origins = "*")
     public Collection<Utilisateur> user_ByNom(@PathVariable String username) {
         return U_repo.findAll().stream().filter(x -> x.getUsername().equals(username)).collect(Collectors.toList());
-    }*/
+    }
     @GetMapping("/user_ByCin/{cin}")
     @CrossOrigin(origins = "*")
     public Collection<Utilisateur> user_ByCin(@PathVariable String cin) {
         return U_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
     }
 
-    @GetMapping("/user_ByEmail/{email}")
-    @CrossOrigin(origins = "*")
-    public Collection<Utilisateur> user_ByEmail(@PathVariable String email) {
-        return U_repo.findAll().stream().filter(x -> x.getEmail().equals(email)).collect(Collectors.toList());
-    }
+
+
     /*@PostMapping("/ajouter_user")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Utilisateur> ajouter_user(@Valid @RequestBody Utilisateur utilisateur) throws URISyntaxException {
@@ -78,22 +75,16 @@ public class UtilisateurController {
     @PostMapping("/ajouter_user")
     public ResponseEntity<?> ajouter_user(@Valid @RequestBody SignupRequest signUpRequest) {
 
-        if (U_repo.existsByUsername(signUpRequest.getEmail())) {
+        if (U_repo.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
-        }
-        if (U_repo.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
         }
         Utilisateur utilisateur = new Utilisateur(signUpRequest.getCin(),
                 signUpRequest.getUsername(),
                 encoder.encode((signUpRequest.getPassword())),
                 signUpRequest.getNom(),
-                signUpRequest.getPrenom(),
-                signUpRequest.getEmail());
+                signUpRequest.getPrenom());
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
         if (strRoles != null){
@@ -154,10 +145,9 @@ public class UtilisateurController {
         u.setId(id);
         u.setNom(utilisateur.getNom());
         u.setPrenom(utilisateur.getPrenom());
-       // u.setUsername(utilisateur.getUsername());
+       u.setUsername(utilisateur.getUsername());
         String hashPW=encoder.encode(utilisateur.getPassword());
         u.setPassword(hashPW);
-        u.setEmail(utilisateur.getEmail());
         u.setRoles(utilisateur.getRoles());
         Utilisateur result= U_repo.save(u);
         return ResponseEntity.ok().body(result);

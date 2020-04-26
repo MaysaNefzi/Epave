@@ -16,6 +16,7 @@ public class Police {
     @GeneratedValue
     private Long id;
     @NotNull
+    @Column(unique = true)
     private String numPolice;
     @NotNull
     private String typePolice;

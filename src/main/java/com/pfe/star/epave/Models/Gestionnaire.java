@@ -14,6 +14,7 @@ import java.util.Set;
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Gestionnaire extends Utilisateur {
     @NotNull
+    @Column(unique = true)
     private String matricule;
 
     @OneToMany(mappedBy="gestionnaire", cascade= CascadeType.ALL)
@@ -24,8 +25,8 @@ public class Gestionnaire extends Utilisateur {
     public Gestionnaire() {
     }
 
-    public Gestionnaire(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @Email String email, @NotNull String matricule,  Set<Vente> ventes) {
-        super(cin, username, password, nom, prenom, email);
+    public Gestionnaire(String cin, @Email @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String matricule,  Set<Vente> ventes) {
+        super(cin, username, password, nom, prenom);
         this.matricule = matricule;
         this.ventes = ventes;
     }

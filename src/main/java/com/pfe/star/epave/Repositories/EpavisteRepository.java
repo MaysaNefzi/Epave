@@ -14,6 +14,5 @@ public interface EpavisteRepository extends JpaRepository<Epaviste,Long> {
     @Query(value = "SELECT e from Epaviste e order by e.nom DESC ")
     public List<Epaviste> getAllEpv();
     Boolean existsByUsername(String username);
-    Boolean existsByEmail(String email);
 }
 
