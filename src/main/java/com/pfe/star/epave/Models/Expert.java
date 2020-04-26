@@ -13,7 +13,7 @@ import java.util.Set;
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Expert extends Utilisateur {
     @OneToMany(mappedBy="expert", cascade= CascadeType.ALL)
-    private Set<Sinistre>sinistres=new HashSet<>();
+    private Set<Sinistre>sinistres;
 
     public Expert() {
     }

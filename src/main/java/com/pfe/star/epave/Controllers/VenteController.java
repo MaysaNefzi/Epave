@@ -1,7 +1,9 @@
 package com.pfe.star.epave.Controllers;
 
 
+import com.pfe.star.epave.Models.Offre;
 import com.pfe.star.epave.Models.Vente;
+import com.pfe.star.epave.Repositories.OffreRepository;
 import com.pfe.star.epave.Repositories.VenteRepository;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
@@ -17,10 +19,7 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,16 +28,19 @@ public class VenteController {
     private final Logger log = LoggerFactory.getLogger(VenteController.class);
     @Autowired
     private final VenteRepository V_repo;
-    private boolean enchere= true;
-    public VenteController(VenteRepository v_repo){
-        V_repo=v_repo;
-    }
+    private final OffreRepository O_repo;
 
+    private boolean enchere= true;
+    public VenteController(VenteRepository v_repo , OffreRepository o_repo){
+        V_repo=v_repo;
+        O_repo=o_repo;
+    }
     @GetMapping("/liste_vente")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Vente> liste_vente(){
         return V_repo.findAll();
     }
+
 
     @GetMapping("/vente_ById/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
@@ -47,6 +49,23 @@ public class VenteController {
         return vente.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @GetMapping("/vente_ByEpv/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Vente> Vente_By_Epv(@PathVariable("id") Long id){
+        return V_repo.Vente_By_Epv(id);
+    }
+    @GetMapping("/vente_Encours")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Vente> Vente_Encours(){
+        LocalDate d = LocalDate.now();
+        return V_repo.findAll().stream().filter(x -> x.getDateFin().isAfter(d)).collect(Collectors.toList());
+
+    }
+
+    /*public Collection<Vente> vente_ByEpv(@PathVariable("idE") Long idE ) {
+        Collection<Offre> o = O_repo.OffreByEpv(idE);
+    }*/
 
     @PostMapping("/ajouter_vente")
     @CrossOrigin(origins = "http://localhost:4200")

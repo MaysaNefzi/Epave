@@ -1,20 +1,19 @@
 package com.pfe.star.epave.Controllers;
 
-import com.pfe.star.epave.Models.Client;
-import com.pfe.star.epave.Models.Police;
+import com.pfe.star.epave.Models.*;
 import com.pfe.star.epave.Repositories.PoliceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -46,4 +45,19 @@ public class PoliceController {
         Police result = Police_repo.save(police);
         return ResponseEntity.created(new URI("/ajouter_police" + result.getNumPolice())).body(result);
     }
+    @GetMapping("/liste_police")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Police> liste_police(){
+        return Police_repo.findAll();
+    }
+    @GetMapping("/police_BySin/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Long police_BySin(@PathVariable Long id){
+         s_p c = new s_p();
+        c=(s_p) Police_repo.policesinistre(id).toArray()[0];
+        Long id_police = c.getId_police();
+        return id_police;
+
+    }
+
 }

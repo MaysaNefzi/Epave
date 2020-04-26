@@ -20,6 +20,7 @@ public class Gestionnaire extends Utilisateur {
     @JsonIgnore
     private Set<Vente>ventes=new HashSet<>();
 
+
     public Gestionnaire() {
     }
 

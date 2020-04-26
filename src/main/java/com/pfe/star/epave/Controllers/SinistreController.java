@@ -27,6 +27,8 @@ public class SinistreController {
     @GetMapping("/liste_sin")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> liste_sin(){
+     //
+        //   System.out.println("id expert      :      "+Sin_repo.findAll().get(0).getExpert().getId());
         return Sin_repo.findAll();
     }
 

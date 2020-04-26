@@ -36,6 +36,7 @@ public class Vente {
     @JoinColumn(name="gestionnaire_id" )
     @JsonIgnore
     private Gestionnaire gestionnaire;
+
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sinistre_id", referencedColumnName = "id")
@@ -44,7 +45,8 @@ public class Vente {
     public Vente() {
     }
 
-    public Vente(@NotNull LocalDate dateDebut, @NotNull LocalDate dateFin, int duree, @NotNull String description, @NotNull Boolean enchere, double prixDebut, @NotNull Sinistre sinistre, @NotNull Set<Epaviste> epavistes, @NotNull Gestionnaire gestionnaire) {
+    public Vente(@NotNull LocalDate dateDebut, @NotNull LocalDate dateFin, int duree, @NotNull String description, @NotNull Boolean enchere, double prixDebut,
+                 @NotNull Sinistre sinistre, @NotNull Set<Epaviste> epavistes, @NotNull Gestionnaire gestionnaire) {
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.duree = duree;
@@ -53,6 +55,7 @@ public class Vente {
         this.prixDebut = prixDebut;
         this.offres = offres;
         this.gestionnaire = gestionnaire;
+        this.sinistre =sinistre;
     }
     public Long getId() {
         return id;
@@ -127,6 +130,12 @@ public class Vente {
         this.gestionnaire = gestionnaire;
     }
 
+    public Sinistre getSinistre() {
+        return sinistre;
+    }
 
+    public void setSinistre(Sinistre sinistre) {
+        this.sinistre = sinistre;
+    }
 
 }

@@ -14,4 +14,7 @@ public interface OffreRepository  extends JpaRepository<Offre,Long> {
 
     @Query(value = "SELECT o from Offre o where o.id.venteId=?1 and o.id.epavisteId=?2 ")
     public List<Offre> OffreById(Long idV,Long idE);
+
+    @Query(value = "SELECT o from Offre o where  o.id.epavisteId=?1 ")
+    public List<Offre> OffreByEpv(Long idE);
 }

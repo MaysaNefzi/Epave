@@ -6,12 +6,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Repository
 public interface VenteRepository extends JpaRepository<Vente,Long> {
-    @Query(value = "SELECT v from Vente v where v.dateFin<?1 ")
-    public List<Offre> taritement(LocalDateTime now);
+    @Query(value = "SELECT v from Vente v where v.dateFin<?1")
+    public List<Vente> Encours(LocalDate now);
+
+    @Query(value = "SELECT v , o from Vente v  , Offre o where v.id=o.id.venteId and o.id.epavisteId=?1 ")
+    public List<Vente> Vente_By_Epv( Long idE);
+
+
 }

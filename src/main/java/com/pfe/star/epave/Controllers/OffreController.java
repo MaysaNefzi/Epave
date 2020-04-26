@@ -23,6 +23,7 @@ public class OffreController {
     public OffreController(OffreRepository offre_repo){
         Offre_repo=offre_repo;
     }
+
     @GetMapping("/liste_offre")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Offre> liste_offre(){
@@ -35,15 +36,27 @@ public class OffreController {
         return Offre_repo.getOffresoreder(id);
     }
 
-
-    @GetMapping("/offre_ById/{id}")
+    @GetMapping("/offre_best/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<?> offre_ById(@PathVariable("id") Long id) {
-        Optional<Offre> exp = Offre_repo.findById(id);
-        return exp.map(response -> ResponseEntity.ok().body(response))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public Offre offre_best(@PathVariable("id") Long id){
+        return Offre_repo.getOffresoreder(id).get(0);
     }
 
+  /*  @GetMapping("/offre_ById/{idE}/{idV}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<?> offre_ById(@PathVariable("idE") Long idE ,@PathVariable("idV") Long idV  ) {
+        Optional<Offre> exp = Offre_repo.OffreById(idE, idV);
+        return exp.map(response -> ResponseEntity.ok().body(response))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }*/
+  @GetMapping("/offre_ById/{idV}/{idE}")
+  @CrossOrigin(origins = "http://localhost:4200")
+  public Collection<Offre> offre_ById(@PathVariable("idE") Long idE ,@PathVariable("idV") Long idV  ) {
+      return Offre_repo.OffreById(idV, idE);
+  }
+    public Collection<Offre> offre_ByEpv(Long idE ) {
+        return Offre_repo.OffreByEpv(idE);
+    }
     @PostMapping("/ajouter_offre")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Offre> ajouter_offre(@Valid @RequestBody Offre offre) throws URISyntaxException {

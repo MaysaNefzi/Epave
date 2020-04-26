@@ -1,8 +1,6 @@
 package com.pfe.star.epave.Controllers;
 
-import com.pfe.star.epave.Models.Client;
-import com.pfe.star.epave.Models.ERole;
-import com.pfe.star.epave.Models.Role;
+import com.pfe.star.epave.Models.*;
 import com.pfe.star.epave.Repositories.ClientRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
 import org.slf4j.Logger;
@@ -16,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,6 +34,15 @@ public class ClientController {
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Client> liste_client(){
         return C_repo.findAll();
+    }
+
+    @GetMapping("/client_ByPolice/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Long[] client_ByPolice(@PathVariable Long id){
+        p_c c = (p_c)C_repo.clientpolice(id).toArray()[0];
+        Long L[]={c.getTel(),c.getTel2()};
+        log.info("objet pc1 : " + L[0]+"   pc2 "+ L[1]);
+        return L;
     }
 
     @GetMapping("/client_ById/{id}")
