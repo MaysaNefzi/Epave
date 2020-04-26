@@ -49,12 +49,51 @@ public class VenteController {
         return vente.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
+    // all vente participée
     @GetMapping("/vente_ByEpv/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public List<Vente> Vente_By_Epv(@PathVariable("id") Long id){
         return V_repo.Vente_By_Epv(id);
     }
+
+    //all vente participee ecnhere
+    @GetMapping("/vente_enchre_ByEpv/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Vente> Vente_enchre_By_Epv(@PathVariable("id") Long id){
+        return V_repo.Vente_By_Epv(id).stream().filter(this::est_Enchere).collect(Collectors.toList());
+    }
+
+    // vente en cours participée
+    @GetMapping("/vente_encours_By_Epv/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Vente> Vente_encours_By_Epv(@PathVariable("id") Long id){
+        LocalDate d = LocalDate.now();
+        return  V_repo.Vente_By_Epv(id).stream().filter(x -> x.getDateFin().isAfter(d)).collect(Collectors.toList());
+    }
+
+    // vente encours non participée
+    @GetMapping("/vente_encours_N_ByEpv/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Vente> Vente_encours_N_By_Epv(@PathVariable("id") Long id){
+        List<Vente> l2 = Vente_By_Epv(id);
+        Collection<Vente> l1 = liste_vente();
+        List<Vente> diff = l1.stream()
+                .filter(i -> !l2.contains(i))
+                .collect (Collectors.toList());
+        LocalDate d = LocalDate.now();
+        return diff.stream().filter(x -> x.getDateFin().isAfter(d)).collect(Collectors.toList());
+    }
+
+    // all vente termine et participee
+    @GetMapping("/vente_terminee_By_Epv/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Vente> Vente_terminee_By_Epv(@PathVariable("id") Long id){
+        LocalDate d = LocalDate.now();
+        return  V_repo.Vente_By_Epv(id).stream().filter(x -> x.getDateFin().isBefore(d)).collect(Collectors.toList());
+    }
+
+    //
+
     @GetMapping("/vente_Encours")
     @CrossOrigin(origins = "http://localhost:4200")
     public List<Vente> Vente_Encours(){
