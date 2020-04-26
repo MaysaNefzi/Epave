@@ -1,5 +1,6 @@
 package com.pfe.star.epave.Controllers;
 
+import com.pfe.star.epave.Models.Police;
 import com.pfe.star.epave.Models.Sinistre;
 import com.pfe.star.epave.Repositories.SinistreRepository;
 import org.slf4j.Logger;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,8 +30,6 @@ public class SinistreController {
     @GetMapping("/liste_sin")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> liste_sin(){
-     //
-        //   System.out.println("id expert      :      "+Sin_repo.findAll().get(0).getExpert().getId());
         return Sin_repo.findAll();
     }
 
@@ -51,6 +52,13 @@ public class SinistreController {
     public Collection<Sinistre> sin_ByNumSinistre(@PathVariable String numeroSinistre) {
         return Sin_repo.findAll().stream().filter(x -> x.getNumeroSinistre().equals(numeroSinistre)).collect(Collectors.toList());
 
+    }
+    @PostMapping("/ajouter_sinistre")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<Sinistre> ajouter_sinistre(@Valid @RequestBody Sinistre sini) throws URISyntaxException {
+        log.info("add police", sini);
+        Sinistre result = Sin_repo.save(sini);
+        return ResponseEntity.created(new URI("/ajouter_police" + result.getNumeroSinistre())).body(result);
     }
 
     @GetMapping("/Sin_ByImmatriculation/{immatriculation}")

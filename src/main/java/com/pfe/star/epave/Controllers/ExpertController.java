@@ -73,17 +73,22 @@ public class ExpertController {
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Expert> modifier_exp(@Valid @RequestBody Expert exp, @PathVariable("id") long id) {
         log.info("Modifier Expert", exp);
+        Set<Role> roles = new HashSet<>();
         Optional<Expert> expOptional = Exp_repo.findById(id);
         if (expOptional.isEmpty())
             return ResponseEntity.notFound().build();
         Expert e = expOptional.get();
         e.setId(id);
         e.setCin(exp.getCin());
-        e.setId(exp.getId());
         e.setNom(exp.getNom());
         e.setPrenom(exp.getPrenom());
         e.setUsername(exp.getUsername());
-        e.setPassword(exp.getPassword());
+        String hashPW=bCryptPasswordEncoder.encode(exp.getPassword());
+        e.setPassword(hashPW);
+        Role expRole = roleRepository.findByName(ERole.ROLE_EXP)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(expRole);
+        exp.setRoles(roles);
         Expert result= Exp_repo.save(e);
         return ResponseEntity.ok().body(result);
     }

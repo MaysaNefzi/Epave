@@ -65,7 +65,7 @@ public class EpavisteController {
         String hashPW=bCryptPasswordEncoder.encode(epav.getPassword());
         epav.setPassword(hashPW);
         Set<Role> roles = new HashSet<>();
-        Role epavRole = roleRepository.findByName(ERole.ROLE_EXP)
+        Role epavRole = roleRepository.findByName(ERole.ROLE_EPV)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(epavRole);
         epav.setRoles(roles);
@@ -85,10 +85,15 @@ public class EpavisteController {
         e.setCin(epav.getCin());
         e.setMatriculeFiscale(epav.getMatriculeFiscale());
         e.setUsername(epav.getUsername());
-        e.setPassword(epav.getPassword());
+        String hashPW=bCryptPasswordEncoder.encode(epav.getPassword());
+        e.setPassword(hashPW);
         e.setNom(epav.getNom());
         e.setPrenom(epav.getPrenom());
         e.setCompteActif(epav.isCompteActif());
+        Set<Role> roles = new HashSet<>();
+        Role epavRole = roleRepository.findByName(ERole.ROLE_EPV)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(epavRole);
         Epaviste result= Epav_repo.save(e);
         return ResponseEntity.ok().body(result);
     }

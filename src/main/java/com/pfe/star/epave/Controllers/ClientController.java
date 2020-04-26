@@ -93,12 +93,17 @@ public class ClientController {
         c.setNom(client.getNom());
         c.setPrenom(client.getPrenom());
         c.setUsername(client.getUsername());
-        c.setPassword(client.getPassword());
+        String hashPW=bCryptPasswordEncoder.encode(client.getPassword());
+        c.setPassword(hashPW);
         c.setAdresse(client.getAdresse());
         c.setDelegation(client.getDelegation());
         c.setGouvernement(client.getGouvernement());
         c.setTel1(client.getTel1());
         c.setTel2(client.getTel2());
+        Set<Role> roles = new HashSet<>();
+        Role cRole = roleRepository.findByName(ERole.ROLE_CLT)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(cRole);
         Client result= C_repo.save(c);
         return ResponseEntity.ok().body(result);
     }

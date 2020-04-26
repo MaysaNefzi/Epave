@@ -1,6 +1,7 @@
 package com.pfe.star.epave.Models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -30,6 +31,7 @@ public class Utilisateur {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JsonIgnore
     private Set<Role> roles=new HashSet<>();
     @Email
     @NotNull
@@ -39,7 +41,7 @@ public class Utilisateur {
     }
 
 
-    public Utilisateur(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @Email String email) {
+    public Utilisateur(@NotNull String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom,  @Email @NotNull String email) {
         this.cin = cin;
         this.username = username;
         this.password = password;
@@ -47,10 +49,12 @@ public class Utilisateur {
         this.prenom = prenom;
         this.email = email;
     }
-    public Utilisateur(String username, @Email String email, String password) {
+
+    public Utilisateur(Long id, @NotNull String username, @NotNull String password, @Email @NotNull String email) {
+        this.id = id;
         this.username = username;
-        this.email = email;
         this.password = password;
+        this.email = email;
     }
 
     public Long getId() {

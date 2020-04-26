@@ -49,11 +49,11 @@ public class UtilisateurController {
         return utilisateur.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    @GetMapping("/user_ByNom/{username}")
+   /* @GetMapping("/user_ByNom/{username}")
     @CrossOrigin(origins = "*")
     public Collection<Utilisateur> user_ByNom(@PathVariable String username) {
         return U_repo.findAll().stream().filter(x -> x.getUsername().equals(username)).collect(Collectors.toList());
-    }
+    }*/
     @GetMapping("/user_ByCin/{cin}")
     @CrossOrigin(origins = "*")
     public Collection<Utilisateur> user_ByCin(@PathVariable String cin) {
@@ -63,7 +63,7 @@ public class UtilisateurController {
     @GetMapping("/user_ByEmail/{email}")
     @CrossOrigin(origins = "*")
     public Collection<Utilisateur> user_ByEmail(@PathVariable String email) {
-        return U_repo.findAll().stream().filter(x -> x.getUsername().equals(email)).collect(Collectors.toList());
+        return U_repo.findAll().stream().filter(x -> x.getEmail().equals(email)).collect(Collectors.toList());
     }
     /*@PostMapping("/ajouter_user")
     @CrossOrigin(origins = "http://localhost:4200")
@@ -78,7 +78,7 @@ public class UtilisateurController {
     @PostMapping("/ajouter_user")
     public ResponseEntity<?> ajouter_user(@Valid @RequestBody SignupRequest signUpRequest) {
 
-        if (U_repo.existsByUsername(signUpRequest.getUsername())) {
+        if (U_repo.existsByUsername(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
@@ -154,10 +154,24 @@ public class UtilisateurController {
         u.setId(id);
         u.setNom(utilisateur.getNom());
         u.setPrenom(utilisateur.getPrenom());
-        u.setUsername(utilisateur.getUsername());
+       // u.setUsername(utilisateur.getUsername());
         String hashPW=encoder.encode(utilisateur.getPassword());
         u.setPassword(hashPW);
         u.setEmail(utilisateur.getEmail());
+        u.setRoles(utilisateur.getRoles());
+        Utilisateur result= U_repo.save(u);
+        return ResponseEntity.ok().body(result);
+    }
+    @PutMapping("/modifier_password/{id}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<Utilisateur> modifier_password(@Valid @RequestBody Utilisateur utilisateur, @PathVariable("id") long id) {
+        log.info("Modifier Password", utilisateur);
+        Optional<Utilisateur> userOptional = U_repo.findById(id);
+        if (userOptional.isEmpty())
+            return ResponseEntity.notFound().build();
+        Utilisateur u = userOptional.get();
+        String hashPW=encoder.encode(utilisateur.getPassword());
+        u.setPassword(hashPW);
         Utilisateur result= U_repo.save(u);
         return ResponseEntity.ok().body(result);
     }

@@ -1,5 +1,6 @@
 package com.pfe.star.epave.Models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -21,15 +22,16 @@ public class Police {
     @NotNull
     private String branchePolice;
     @NotNull
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private LocalDate dateEffet;
     @NotNull
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private LocalDate dateEcheance;
     @NotNull
     private String etatPolice;
     @NotNull
     @ManyToOne
     @JoinColumn(name="client_id" )
-    @JsonIgnore
     private Client client;
     @OneToMany(mappedBy="police", cascade= CascadeType.ALL)
     @JsonIgnore

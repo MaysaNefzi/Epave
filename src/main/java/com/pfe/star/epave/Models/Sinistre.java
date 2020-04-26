@@ -1,5 +1,6 @@
 package com.pfe.star.epave.Models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -21,6 +22,7 @@ public class Sinistre {
     @NotNull
     private String immatriculation;
     @NotNull
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private LocalDate dateAccident;
     @NotNull
     private String numChassis;
@@ -35,14 +37,13 @@ public class Sinistre {
     @NotNull
     @ManyToOne
     @JoinColumn(name="police_id" )
-    @JsonIgnore
     private Police police;
     @NotNull
     @ManyToOne
     @JoinColumn(name="expert_id" )
-    @JsonIgnore
     private Expert expert;
     @OneToMany(mappedBy="sinistre", cascade= CascadeType.ALL)
+    @JsonIgnore
     private Set<Rapport> rapports=new HashSet<>();
 
     @OneToMany(mappedBy="sinistre", cascade= CascadeType.ALL)

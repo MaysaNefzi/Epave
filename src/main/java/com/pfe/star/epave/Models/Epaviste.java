@@ -1,6 +1,7 @@
 package com.pfe.star.epave.Models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class Epaviste extends Utilisateur {
     @NotNull
     private boolean compteActif=false;
     @OneToMany(mappedBy="epaviste",cascade=CascadeType.ALL)
+    @JsonIgnore
     private Set<Offre>offres= new HashSet<>();
 
 

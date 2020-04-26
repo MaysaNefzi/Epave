@@ -87,7 +87,12 @@ public class GestionnaireController {
         g.setNom(gest.getNom());
         g.setPrenom(gest.getPrenom());
         g.setUsername(gest.getUsername());
-        g.setPassword(gest.getPassword());
+        String hashPW=bCryptPasswordEncoder.encode(gest.getPassword());
+        g.setPassword(hashPW);
+        Set<Role> roles = new HashSet<>();
+        Role gestRole = roleRepository.findByName(ERole.ROLE_GEST)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(gestRole);
         Gestionnaire result= Gest_repo.save(g);
         return ResponseEntity.ok().body(result);
     }
