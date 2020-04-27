@@ -3,6 +3,7 @@ package com.pfe.star.epave.Controllers;
 import com.pfe.star.epave.Models.*;
 import com.pfe.star.epave.Repositories.ClientRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
+import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,12 @@ public class ClientController {
 
     @PostMapping("/ajouter_compte_client")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Client> ajouter_compte_client(@Valid @RequestBody Client client) throws URISyntaxException {
+    public ResponseEntity<?> ajouter_compte_client(@Valid @RequestBody Client client) throws URISyntaxException {
+        if (C_repo.existsByUsername(client.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email est déjà utilisé"));
+        }
         log.info("Créer un compte client", client);
         String hashPW=bCryptPasswordEncoder.encode(client.getPassword());
         client.setPassword(hashPW);

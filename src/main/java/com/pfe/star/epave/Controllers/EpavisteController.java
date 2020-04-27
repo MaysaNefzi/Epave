@@ -5,6 +5,7 @@ import com.pfe.star.epave.Models.Epaviste;
 import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Repositories.EpavisteRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
+import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,12 @@ public class EpavisteController {
 
     @PostMapping("/ajouter_epav")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Epaviste> ajouter_epav(@Valid @RequestBody Epaviste epav) throws URISyntaxException {
+    public ResponseEntity<?> ajouter_epav(@Valid @RequestBody Epaviste epav) throws URISyntaxException {
+        if (Epav_repo.existsByUsername(epav.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email est déjà utilisé"));
+        }
         log.info("Ajouter un nouveau Epaviste", epav);
         String hashPW=bCryptPasswordEncoder.encode(epav.getPassword());
         epav.setPassword(hashPW);

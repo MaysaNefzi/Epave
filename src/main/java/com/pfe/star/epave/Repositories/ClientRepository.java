@@ -15,5 +15,6 @@ import java.util.List;
 public interface ClientRepository extends JpaRepository<Client,Long> {
     @Query(value = "SELECT  new com.pfe.star.epave.Models.p_c(p.id ,c.tel1 , c.tel2)  from  Police  p JOIN  p.client c where p.id=?1")
     public List<p_c> clientpolice(Long id);
+    Boolean existsByUsername(String username);
 
 }

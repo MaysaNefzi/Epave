@@ -5,6 +5,7 @@ import com.pfe.star.epave.Models.Expert;
 import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Repositories.ExpertRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
+import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,12 @@ public class ExpertController {
 
     @PostMapping("/ajouter_exp")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Expert> ajouter_exp(@Valid @RequestBody Expert exp) throws URISyntaxException {
+    public ResponseEntity<?> ajouter_exp(@Valid @RequestBody Expert exp) throws URISyntaxException {
+        if (Exp_repo.existsByUsername(exp.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email est déjà utilisé"));
+        }
         log.info("Ajouter un nouveau Expert", exp);
         Set<Role> roles = new HashSet<>();
         String hashPW=bCryptPasswordEncoder.encode(exp.getPassword());
