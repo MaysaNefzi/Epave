@@ -98,7 +98,7 @@ public class VenteController {
     @CrossOrigin(origins = "http://localhost:4200")
     public List<Vente> Vente_Encours(){
         LocalDate d = LocalDate.now();
-        return V_repo.findAll().stream().filter(x -> x.getDateFin().isAfter(d)).collect(Collectors.toList());
+        return V_repo.findAllByDateFin().stream().filter(x -> x.getDateFin().isAfter(d)).collect(Collectors.toList());
 
     }
 
