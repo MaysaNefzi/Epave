@@ -1,5 +1,6 @@
 package com.pfe.star.epave.Models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -18,8 +19,10 @@ public class Vente {
     @GeneratedValue
     private Long id;
   //  @NotNull
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private LocalDate dateDebut;
 //    @NotNull
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private LocalDate dateFin;
     @NotNull
     private int duree;
@@ -34,11 +37,10 @@ public class Vente {
     @NotNull
     @ManyToOne
     @JoinColumn(name="gestionnaire_id" )
-    @JsonIgnore
     private Gestionnaire gestionnaire;
 
     @NotNull
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne//(cascade = CascadeType.ALL)
     @JoinColumn(name = "sinistre_id", referencedColumnName = "id")
     private Sinistre sinistre;
 

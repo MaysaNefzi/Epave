@@ -11,6 +11,8 @@ import com.pfe.star.epave.Security.Payload.Request.SignupRequest;
 import com.pfe.star.epave.Security.Payload.Response.JwtResponse;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import com.pfe.star.epave.Security.Services.UserDetailsImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,6 +36,8 @@ import java.util.stream.Collectors;
 public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
+    private final Logger log = LoggerFactory.getLogger(UtilisateurController.class);
+
 
     @Autowired
     UtilisateurRepository userRepository;
@@ -67,7 +71,6 @@ public class AuthController {
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getPassword(),
-                userDetails.getEmail(),
                 roles));
     }
 
@@ -80,17 +83,11 @@ public class AuthController {
                     .body(new MessageResponse("Error: Username is already taken!"));
         }
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
         Utilisateur utilisateur=new Utilisateur(signUpRequest.getCin(),
                 signUpRequest.getUsername(),
                 encoder.encode((signUpRequest.getPassword())),
                 signUpRequest.getNom(),
-                signUpRequest.getPrenom(),
-                signUpRequest.getEmail());
+                signUpRequest.getPrenom());
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();

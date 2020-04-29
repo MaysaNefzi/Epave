@@ -13,20 +13,15 @@ import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
     private Long id;
-
     private String username;
-    private String email;
-
-
     @JsonIgnore
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String username,  String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
-        this.email = email;
         this.password = password;
         this.authorities = authorities;
     }
@@ -41,7 +36,6 @@ public class UserDetailsImpl implements UserDetails {
         return new UserDetailsImpl(
                 utilisateur.getId(),
                 utilisateur.getUsername(),
-                utilisateur.getEmail(),
                 utilisateur.getPassword(),
                 authorities);
     }
@@ -96,7 +90,4 @@ public class UserDetailsImpl implements UserDetails {
         return Objects.equals(id, utilisateur.id);
     }
 
-    public String getEmail() {
-        return email;
-    }
 }

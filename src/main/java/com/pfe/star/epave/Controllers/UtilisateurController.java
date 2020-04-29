@@ -60,88 +60,6 @@ public class UtilisateurController {
         return U_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
     }
 
-    @GetMapping("/user_ByEmail/{email}")
-    @CrossOrigin(origins = "*")
-    public Collection<Utilisateur> user_ByEmail(@PathVariable String email) {
-        return U_repo.findAll().stream().filter(x -> x.getUsername().equals(email)).collect(Collectors.toList());
-    }
-    /*@PostMapping("/ajouter_user")
-    @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Utilisateur> ajouter_user(@Valid @RequestBody Utilisateur utilisateur) throws URISyntaxException {
-        log.info("Ajouter un nouveau Utilisateur", utilisateur);
-        String hashPW=encoder.encode(utilisateur.getPassword());
-        utilisateur.setPassword(hashPW);
-
-        Utilisateur result = U_repo.save(utilisateur);
-        return ResponseEntity.created(new URI("/ajouter_utilisateur" + result.getCin())).body(result);
-    }*/
-    @PostMapping("/ajouter_user")
-    public ResponseEntity<?> ajouter_user(@Valid @RequestBody SignupRequest signUpRequest) {
-
-        if (U_repo.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
-        }
-        if (U_repo.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
-        Utilisateur utilisateur = new Utilisateur(signUpRequest.getCin(),
-                signUpRequest.getUsername(),
-                encoder.encode((signUpRequest.getPassword())),
-                signUpRequest.getNom(),
-                signUpRequest.getPrenom(),
-                signUpRequest.getEmail());
-        Set<String> strRoles = signUpRequest.getRole();
-        Set<Role> roles = new HashSet<>();
-        if (strRoles != null){
-
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "gestionnaire":
-                        Role gestRole = roleRepository.findByName(ERole.ROLE_GEST)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(gestRole);
-                        utilisateur.setRoles(roles);
-                        U_repo.save(utilisateur);
-                        break;
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-                        utilisateur.setRoles(roles);
-                        U_repo.save(utilisateur);
-
-                        break;
-                    case "epaviste":
-                        Role epvRole = roleRepository.findByName(ERole.ROLE_EPV)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(epvRole);
-                        utilisateur.setRoles(roles);
-                        U_repo.save(utilisateur);
-
-                        break;
-                    case "expert":
-                        Role expRole = roleRepository.findByName(ERole.ROLE_EXP)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(expRole);
-                        utilisateur.setRoles(roles);
-                        U_repo.save(utilisateur);
-                        break;
-                    case "client":
-                        Role cRole = roleRepository.findByName(ERole.ROLE_CLT)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(cRole);
-                        utilisateur.setRoles(roles);
-                        U_repo.save(utilisateur);
-                        break;
-                }
-            });
-        }
-        return ResponseEntity.ok().body(utilisateur);
-    }
     @PutMapping("/modifier_user/{id}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<Utilisateur> modifier_user(@Valid @RequestBody Utilisateur utilisateur, @PathVariable("id") long id) {
@@ -154,10 +72,23 @@ public class UtilisateurController {
         u.setId(id);
         u.setNom(utilisateur.getNom());
         u.setPrenom(utilisateur.getPrenom());
-        u.setUsername(utilisateur.getUsername());
+       u.setUsername(utilisateur.getUsername());
         String hashPW=encoder.encode(utilisateur.getPassword());
         u.setPassword(hashPW);
-        u.setEmail(utilisateur.getEmail());
+        u.setRoles(utilisateur.getRoles());
+        Utilisateur result= U_repo.save(u);
+        return ResponseEntity.ok().body(result);
+    }
+    @PutMapping("/modifier_password/{id}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<Utilisateur> modifier_password(@Valid @RequestBody Utilisateur utilisateur, @PathVariable("id") long id) {
+        log.info("Modifier Password", utilisateur);
+        Optional<Utilisateur> userOptional = U_repo.findById(id);
+        if (userOptional.isEmpty())
+            return ResponseEntity.notFound().build();
+        Utilisateur u = userOptional.get();
+        String hashPW=encoder.encode(utilisateur.getPassword());
+        u.setPassword(hashPW);
         Utilisateur result= U_repo.save(u);
         return ResponseEntity.ok().body(result);
     }

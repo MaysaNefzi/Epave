@@ -1,6 +1,7 @@
 package com.pfe.star.epave.Models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -13,13 +14,14 @@ import java.util.Set;
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Expert extends Utilisateur {
     @OneToMany(mappedBy="expert", cascade= CascadeType.ALL)
+    @JsonIgnore
     private Set<Sinistre>sinistres;
 
     public Expert() {
     }
 
-    public Expert(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @Email String email, Set<Sinistre> sinistres) {
-        super(cin, username, password, nom, prenom, email);
+    public Expert(String cin,@Email @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, Set<Sinistre> sinistres) {
+        super(cin, username, password, nom, prenom);
         this.sinistres = sinistres;
     }
 

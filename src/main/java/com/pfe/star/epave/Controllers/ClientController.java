@@ -3,6 +3,7 @@ package com.pfe.star.epave.Controllers;
 import com.pfe.star.epave.Models.*;
 import com.pfe.star.epave.Repositories.ClientRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
+import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,12 @@ public class ClientController {
 
     @PostMapping("/ajouter_compte_client")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Client> ajouter_compte_client(@Valid @RequestBody Client client) throws URISyntaxException {
+    public ResponseEntity<?> ajouter_compte_client(@Valid @RequestBody Client client) throws URISyntaxException {
+        if (C_repo.existsByUsername(client.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email est déjà utilisé"));
+        }
         log.info("Créer un compte client", client);
         String hashPW=bCryptPasswordEncoder.encode(client.getPassword());
         client.setPassword(hashPW);
@@ -93,12 +99,17 @@ public class ClientController {
         c.setNom(client.getNom());
         c.setPrenom(client.getPrenom());
         c.setUsername(client.getUsername());
-        c.setPassword(client.getPassword());
+        String hashPW=bCryptPasswordEncoder.encode(client.getPassword());
+        c.setPassword(hashPW);
         c.setAdresse(client.getAdresse());
         c.setDelegation(client.getDelegation());
         c.setGouvernement(client.getGouvernement());
         c.setTel1(client.getTel1());
         c.setTel2(client.getTel2());
+        Set<Role> roles = new HashSet<>();
+        Role cRole = roleRepository.findByName(ERole.ROLE_CLT)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(cRole);
         Client result= C_repo.save(c);
         return ResponseEntity.ok().body(result);
     }

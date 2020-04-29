@@ -2,6 +2,7 @@ package com.pfe.star.epave.Controllers;
 
 import com.pfe.star.epave.Models.Offre;
 import com.pfe.star.epave.Models.OffreID;
+import com.pfe.star.epave.Models.Vente;
 import com.pfe.star.epave.Repositories.OffreRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,19 +42,19 @@ public class OffreController {
     public Offre offre_best(@PathVariable("id") Long id){
         return Offre_repo.getOffresoreder(id).get(0);
     }
-
-  /*  @GetMapping("/offre_ById/{idE}/{idV}")
+    @GetMapping("/offre_ById/{idV}/{idE}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<?> offre_ById(@PathVariable("idE") Long idE ,@PathVariable("idV") Long idV  ) {
-        Optional<Offre> exp = Offre_repo.OffreById(idE, idV);
-        return exp.map(response -> ResponseEntity.ok().body(response))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }*/
-  @GetMapping("/offre_ById/{idV}/{idE}")
-  @CrossOrigin(origins = "http://localhost:4200")
-  public Collection<Offre> offre_ById(@PathVariable("idE") Long idE ,@PathVariable("idV") Long idV  ) {
-      return Offre_repo.OffreById(idV, idE);
-  }
+    public Offre offre_ById(@PathVariable("idE") Long idE ,@PathVariable("idV") Long idV  ) {
+        return Offre_repo.OffreById(idV, idE);
+    }
+    @GetMapping("/isbest/{idV}/{idE}")
+    public boolean isBest(@PathVariable("idV")Long idV,@PathVariable("idE") Long idE){
+        Offre offreM =offre_best(idV);
+        Offre offre= offre_ById(idV, idE);
+        return offreM.equals(offre);
+    }
+
+
     public Collection<Offre> offre_ByEpv(Long idE ) {
         return Offre_repo.OffreByEpv(idE);
     }
@@ -83,6 +84,8 @@ public class OffreController {
         Offre result= Offre_repo.save(of);
         return ResponseEntity.ok().body(result);
     }
+
+
 
 
 }

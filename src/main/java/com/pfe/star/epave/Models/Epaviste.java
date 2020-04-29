@@ -1,6 +1,7 @@
 package com.pfe.star.epave.Models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -12,18 +13,20 @@ import java.util.Set;
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Epaviste extends Utilisateur {
     @NotNull
+    @Column(unique = true)
     private String matriculeFiscale;
     @NotNull
     private boolean compteActif=false;
     @OneToMany(mappedBy="epaviste",cascade=CascadeType.ALL)
+    @JsonIgnore
     private Set<Offre>offres= new HashSet<>();
 
 
     public Epaviste() {
     }
 
-    public Epaviste(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @Email String email, @NotNull String matriculeFiscale, @NotNull boolean compteActif, Set<Offre> offres) {
-        super(cin, username, password, nom, prenom, email);
+    public Epaviste(String cin, @NotNull String username,@Email @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String matriculeFiscale, @NotNull boolean compteActif, Set<Offre> offres) {
+        super(cin, username, password, nom, prenom);
         this.matriculeFiscale = matriculeFiscale;
         this.compteActif = compteActif;
         this.offres = offres;

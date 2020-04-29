@@ -5,6 +5,7 @@ import com.pfe.star.epave.Models.Gestionnaire;
 import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Repositories.GestionnaireRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
+import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,14 +62,41 @@ public class GestionnaireController {
     }
     @PostMapping("/ajouter_gest")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Gestionnaire> ajouter_gest(@Valid @RequestBody Gestionnaire gest) throws URISyntaxException {
+    public ResponseEntity<?> ajouter_gest(@Valid @RequestBody Gestionnaire gest) throws URISyntaxException {
         Set<Role> roles = new HashSet<>();
+        if (Gest_repo.existsByUsername(gest.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email est déjà utilisé"));
+        }
         log.info("Ajouter un nouveau gestionnaire", gest);
         String hashPW=bCryptPasswordEncoder.encode(gest.getPassword());
         gest.setPassword(hashPW);
         Role gestRole = roleRepository.findByName(ERole.ROLE_GEST)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(gestRole);
+        gest.setRoles(roles);
+        Gestionnaire result = Gest_repo.save(gest);
+        return ResponseEntity.created(new URI("/ajouter_gest" + result.getCin())).body(result);
+    }
+    @PostMapping("/ajouter_admin")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<?> ajouter_admin(@Valid @RequestBody Gestionnaire gest) throws URISyntaxException {
+        Set<Role> roles = new HashSet<>();
+        if (Gest_repo.existsByUsername(gest.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email est déjà utilisé"));
+        }
+        log.info("Ajouter un nouveau gestionnaire", gest);
+        String hashPW=bCryptPasswordEncoder.encode(gest.getPassword());
+        gest.setPassword(hashPW);
+        Role adminRole=roleRepository.findByName(ERole.ROLE_ADMIN)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        Role gestRole = roleRepository.findByName(ERole.ROLE_GEST)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(gestRole);
+        roles.add(adminRole);
         gest.setRoles(roles);
         Gestionnaire result = Gest_repo.save(gest);
         return ResponseEntity.created(new URI("/ajouter_gest" + result.getCin())).body(result);
@@ -87,7 +115,12 @@ public class GestionnaireController {
         g.setNom(gest.getNom());
         g.setPrenom(gest.getPrenom());
         g.setUsername(gest.getUsername());
-        g.setPassword(gest.getPassword());
+        String hashPW=bCryptPasswordEncoder.encode(gest.getPassword());
+        g.setPassword(hashPW);
+        Set<Role> roles = new HashSet<>();
+        Role gestRole = roleRepository.findByName(ERole.ROLE_GEST)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(gestRole);
         Gestionnaire result= Gest_repo.save(g);
         return ResponseEntity.ok().body(result);
     }

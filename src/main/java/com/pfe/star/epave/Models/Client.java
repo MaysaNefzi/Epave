@@ -2,7 +2,10 @@ package com.pfe.star.epave.Models;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -24,13 +27,14 @@ public class Client extends Utilisateur {
     private long tel2;
     @NotNull
     @OneToMany(mappedBy="client", cascade= CascadeType.ALL)
+    @JsonIgnore
     private Set<Police>polices = new HashSet<>();
 
     public Client() {
     }
 
-    public Client(String cin, @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @Email String email, @NotNull String adresse, @NotNull String gouvernement, @NotNull String delegation, @NotNull long tel1, @NotNull long tel2, @NotNull Set<Police> polices) {
-        super(cin, username, password, nom, prenom, email);
+    public Client(String cin,@Email @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String adresse, @NotNull String gouvernement, @NotNull String delegation, @NotNull long tel1, @NotNull long tel2, @NotNull Set<Police> polices) {
+        super(cin, username, password, nom, prenom);
         this.adresse = adresse;
         this.gouvernement = gouvernement;
         this.delegation = delegation;

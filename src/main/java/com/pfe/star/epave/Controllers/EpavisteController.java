@@ -5,6 +5,7 @@ import com.pfe.star.epave.Models.Epaviste;
 import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Repositories.EpavisteRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
+import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,12 +61,17 @@ public class EpavisteController {
 
     @PostMapping("/ajouter_epav")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Epaviste> ajouter_epav(@Valid @RequestBody Epaviste epav) throws URISyntaxException {
+    public ResponseEntity<?> ajouter_epav(@Valid @RequestBody Epaviste epav) throws URISyntaxException {
+        if (Epav_repo.existsByUsername(epav.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email est déjà utilisé"));
+        }
         log.info("Ajouter un nouveau Epaviste", epav);
         String hashPW=bCryptPasswordEncoder.encode(epav.getPassword());
         epav.setPassword(hashPW);
         Set<Role> roles = new HashSet<>();
-        Role epavRole = roleRepository.findByName(ERole.ROLE_EXP)
+        Role epavRole = roleRepository.findByName(ERole.ROLE_EPV)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(epavRole);
         epav.setRoles(roles);
@@ -85,10 +91,15 @@ public class EpavisteController {
         e.setCin(epav.getCin());
         e.setMatriculeFiscale(epav.getMatriculeFiscale());
         e.setUsername(epav.getUsername());
-        e.setPassword(epav.getPassword());
+        String hashPW=bCryptPasswordEncoder.encode(epav.getPassword());
+        e.setPassword(hashPW);
         e.setNom(epav.getNom());
         e.setPrenom(epav.getPrenom());
         e.setCompteActif(epav.isCompteActif());
+        Set<Role> roles = new HashSet<>();
+        Role epavRole = roleRepository.findByName(ERole.ROLE_EPV)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(epavRole);
         Epaviste result= Epav_repo.save(e);
         return ResponseEntity.ok().body(result);
     }

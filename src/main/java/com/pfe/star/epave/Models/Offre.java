@@ -1,6 +1,7 @@
 
 package com.pfe.star.epave.Models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -27,6 +28,7 @@ public class Offre {
     @JoinColumn(name="vente_id",referencedColumnName = "id",insertable = false,updatable = false)
     private Vente vente;
     @NotNull
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private LocalDate dateOffre;
     @NotNull
     private double montant;
