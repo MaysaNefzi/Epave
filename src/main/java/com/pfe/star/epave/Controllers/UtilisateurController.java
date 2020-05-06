@@ -90,15 +90,10 @@ public class UtilisateurController {
         String old_entred=changePWDRequest.getOldPassword();
         String old_db= u.getPassword();
         String entred= changePWDRequest.getNewPassword();
-        String confirm_entred= changePWDRequest.getConfirmPassword();
         if (! encoder.matches(old_entred,old_db)){
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Ancien mot de passe est incorrect"));}
-        else if (! entred.equals(confirm_entred)){
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Mot de passe non confirmé"));}
         else{
             u.setPassword(encoder.encode(entred));
              U_repo.save(u);

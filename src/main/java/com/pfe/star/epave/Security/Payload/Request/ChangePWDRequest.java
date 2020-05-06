@@ -7,13 +7,12 @@ public class ChangePWDRequest {
     private String oldPassword;
     @NotBlank
     private String newPassword;
-    @NotBlank
-    private String confirmPassword;
 
-    public ChangePWDRequest(@NotBlank String oldPassword, @NotBlank String newPassword, @NotBlank String confirmPassword) {
+
+    public ChangePWDRequest(@NotBlank String oldPassword, @NotBlank String newPassword) {
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
-        this.confirmPassword = confirmPassword;
+
     }
 
     public ChangePWDRequest() {
@@ -35,11 +34,5 @@ public class ChangePWDRequest {
         this.newPassword = newPassword;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
 
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
 }
