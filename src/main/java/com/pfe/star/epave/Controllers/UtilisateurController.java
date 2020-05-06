@@ -5,6 +5,7 @@ import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Models.Utilisateur;
 import com.pfe.star.epave.Repositories.RoleRepository;
 import com.pfe.star.epave.Repositories.UtilisateurRepository;
+import com.pfe.star.epave.Security.Payload.Request.ChangePWDRequest;
 import com.pfe.star.epave.Security.Payload.Request.SignupRequest;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import javassist.NotFoundException;
@@ -81,16 +82,28 @@ public class UtilisateurController {
     }
     @PutMapping("/modifier_password/{id}")
     @CrossOrigin(origins = "*")
-    public ResponseEntity<Utilisateur> modifier_password(@Valid @RequestBody Utilisateur utilisateur, @PathVariable("id") long id) {
-        log.info("Modifier Password", utilisateur);
+    public ResponseEntity<?> modifier_password(@Valid @RequestBody ChangePWDRequest changePWDRequest, @PathVariable("id") long id) {
         Optional<Utilisateur> userOptional = U_repo.findById(id);
         if (userOptional.isEmpty())
             return ResponseEntity.notFound().build();
         Utilisateur u = userOptional.get();
-        String hashPW=encoder.encode(utilisateur.getPassword());
-        u.setPassword(hashPW);
-        Utilisateur result= U_repo.save(u);
-        return ResponseEntity.ok().body(result);
+        String old_entred=changePWDRequest.getOldPassword();
+        String old_db= u.getPassword();
+        String entred= changePWDRequest.getNewPassword();
+        String confirm_entred= changePWDRequest.getConfirmPassword();
+        if (! encoder.matches(old_entred,old_db)){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Ancien mot de passe est incorrect"));}
+        else if (! entred.equals(confirm_entred)){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Mot de passe non confirmé"));}
+        else{
+            u.setPassword(encoder.encode(entred));
+             U_repo.save(u);
+            return ResponseEntity.ok().body(new MessageResponse("Mot de passe changé avec succés"));
+        }
     }
     @DeleteMapping("/supprimer_user/{id}")
     @CrossOrigin(origins = "*")
