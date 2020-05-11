@@ -15,17 +15,14 @@ import java.util.Set;
 @Entity
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Client extends Utilisateur {
-    @NotNull
+
     private String adresse;
-    @NotNull
     private String gouvernement;
-    @NotNull
     private String delegation;
-    @NotNull
     private long tel1;
-    @NotNull
     private long tel2;
     @NotNull
+    private boolean compteActif=false;
     @OneToMany(mappedBy="client", cascade= CascadeType.ALL)
     @JsonIgnore
     private Set<Police>polices = new HashSet<>();
@@ -33,13 +30,14 @@ public class Client extends Utilisateur {
     public Client() {
     }
 
-    public Client(String cin,@Email @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String adresse, @NotNull String gouvernement, @NotNull String delegation, @NotNull long tel1, @NotNull long tel2, @NotNull Set<Police> polices) {
+    public Client(String cin,@Email  String username,  String password,  String nom,  String prenom,  String adresse,  String gouvernement,  String delegation, long tel1,  long tel2,  boolean compteActif,   Set<Police> polices) {
         super(cin, username, password, nom, prenom);
         this.adresse = adresse;
         this.gouvernement = gouvernement;
         this.delegation = delegation;
         this.tel1 = tel1;
         this.tel2 = tel2;
+        this.compteActif = compteActif;
         this.polices = polices;
     }
 
@@ -81,6 +79,13 @@ public class Client extends Utilisateur {
 
     public void setTel2(long tel2) {
         this.tel2 = tel2;
+    }
+    public boolean isCompteActif() {
+        return compteActif;
+    }
+
+    public void setCompteActif(boolean compteActif) {
+        this.compteActif = compteActif;
     }
 
     public Set<Police> getPolices() {

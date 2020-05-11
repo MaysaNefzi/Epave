@@ -13,7 +13,6 @@ import java.util.Set;
 @Entity
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Gestionnaire extends Utilisateur {
-    @NotNull
     @Column(unique = true)
     private String matricule;
 
@@ -25,7 +24,7 @@ public class Gestionnaire extends Utilisateur {
     public Gestionnaire() {
     }
 
-    public Gestionnaire(String cin, @Email @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String matricule,  Set<Vente> ventes) {
+    public Gestionnaire(String cin, @Email String username,  String password,  String nom,  String prenom, String matricule,  Set<Vente> ventes) {
         super(cin, username, password, nom, prenom);
         this.matricule = matricule;
         this.ventes = ventes;

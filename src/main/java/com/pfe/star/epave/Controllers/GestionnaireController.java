@@ -6,6 +6,8 @@ import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Repositories.GestionnaireRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
+import com.pfe.star.epave.Security.Services.MailSenderService;
+import com.pfe.star.epave.Security.Services.GeneratorService;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/gestionnaire")
 public class GestionnaireController {
     private final Logger log = LoggerFactory.getLogger(GestionnaireController.class);
+    @Autowired
+    MailSenderService mailSender;
+    @Autowired
+    GeneratorService generator;
     @Autowired
     private final GestionnaireRepository Gest_repo;
     @Autowired
@@ -70,13 +76,18 @@ public class GestionnaireController {
                     .body(new MessageResponse("Error: Email est déjà utilisé"));
         }
         log.info("Ajouter un nouveau gestionnaire", gest);
-        String hashPW=bCryptPasswordEncoder.encode(gest.getPassword());
-        gest.setPassword(hashPW);
+        String pwd=generator.Pwdgenerator();
+        gest.setPassword(bCryptPasswordEncoder.encode(pwd));
         Role gestRole = roleRepository.findByName(ERole.ROLE_GEST)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(gestRole);
         gest.setRoles(roles);
         Gestionnaire result = Gest_repo.save(gest);
+        mailSender.sendEmail(gest.getUsername(),"Mot de passe","Bonjour Mme/Mr "+gest.getNom()
+                +"\n \n L'équipe STAR est heureuse de vous voir parmi elle. \n Vous trouvez ci-dessous votre mot de passe ,vous pouvez le changer quand vous voulez\n \n"
+                +pwd
+                +"\n Vous etes inscrit comme etant un gestionnaire"
+                +"\n \n Merci");
         return ResponseEntity.created(new URI("/ajouter_gest" + result.getCin())).body(result);
     }
     @PostMapping("/ajouter_admin")
@@ -89,8 +100,8 @@ public class GestionnaireController {
                     .body(new MessageResponse("Error: Email est déjà utilisé"));
         }
         log.info("Ajouter un nouveau gestionnaire", gest);
-        String hashPW=bCryptPasswordEncoder.encode(gest.getPassword());
-        gest.setPassword(hashPW);
+        String pwd=generator.Pwdgenerator();
+        gest.setPassword(bCryptPasswordEncoder.encode(pwd));
         Role adminRole=roleRepository.findByName(ERole.ROLE_ADMIN)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         Role gestRole = roleRepository.findByName(ERole.ROLE_GEST)
@@ -99,6 +110,11 @@ public class GestionnaireController {
         roles.add(adminRole);
         gest.setRoles(roles);
         Gestionnaire result = Gest_repo.save(gest);
+        mailSender.sendEmail(gest.getUsername(),"Mot de passe","Bonjour Mme/Mr "+gest.getNom()
+                +"\n \n L'équipe STAR est heureuse de vous voir parmi elle. \n Vous trouvez ci-dessous votre mot de passe ,vous pouvez le changer quand vous voulez\n \n"
+                +pwd
+                +"\n Vous etes inscrit comme etant un gestionnaire admin"
+                +"\n \n Merci");
         return ResponseEntity.created(new URI("/ajouter_gest" + result.getCin())).body(result);
     }
     @PutMapping("/modifier_gest/{id}")
@@ -110,17 +126,11 @@ public class GestionnaireController {
             return ResponseEntity.notFound().build();
         Gestionnaire g = gestOptional.get();
         g.setCin(gest.getCin());
-        g.setId(id);
         g.setMatricule(gest.getMatricule());
         g.setNom(gest.getNom());
         g.setPrenom(gest.getPrenom());
         g.setUsername(gest.getUsername());
-        String hashPW=bCryptPasswordEncoder.encode(gest.getPassword());
-        g.setPassword(hashPW);
         Set<Role> roles = new HashSet<>();
-        Role gestRole = roleRepository.findByName(ERole.ROLE_GEST)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        roles.add(gestRole);
         Gestionnaire result= Gest_repo.save(g);
         return ResponseEntity.ok().body(result);
     }

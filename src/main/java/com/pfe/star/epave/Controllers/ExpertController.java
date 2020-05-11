@@ -6,6 +6,8 @@ import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Repositories.ExpertRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
+import com.pfe.star.epave.Security.Services.MailSenderService;
+import com.pfe.star.epave.Security.Services.GeneratorService;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +27,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/expert")
 public class ExpertController {
     private final Logger log = LoggerFactory.getLogger(ExpertController.class);
-
+    @Autowired
+    MailSenderService mailSender;
+    @Autowired
+    GeneratorService generator;
     @Autowired
     private final ExpertRepository Exp_repo;
     public ExpertController(ExpertRepository exp_repo){
@@ -55,6 +60,7 @@ public class ExpertController {
         return Exp_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
     }
 
+
     @PostMapping("/ajouter_exp")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> ajouter_exp(@Valid @RequestBody Expert exp) throws URISyntaxException {
@@ -65,13 +71,18 @@ public class ExpertController {
         }
         log.info("Ajouter un nouveau Expert", exp);
         Set<Role> roles = new HashSet<>();
-        String hashPW=bCryptPasswordEncoder.encode(exp.getPassword());
-        exp.setPassword(hashPW);
+        String pwd=generator.Pwdgenerator();
+        exp.setPassword(bCryptPasswordEncoder.encode(pwd));
         Role expRole = roleRepository.findByName(ERole.ROLE_EXP)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(expRole);
         exp.setRoles(roles);
         Expert result = Exp_repo.save(exp);
+        mailSender.sendEmail(exp.getUsername(),"Mot de passe","Bonjour Mme/Mr "+exp.getNom()
+                +"\n \n L'équipe STAR est heureuse de vous voir parmi elle. \n Vous trouvez ci-dessous votre mot de passe ,vous pouvez le changer quand vous voulez\n \n"
+                +pwd
+                +"\n Vous etes inscrit comme etant un expert"
+        +"\n \n Merci");
         return ResponseEntity.created(new URI("/ajouter_Exp" + result.getCin())).body(result);
     }
 
@@ -79,7 +90,6 @@ public class ExpertController {
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Expert> modifier_exp(@Valid @RequestBody Expert exp, @PathVariable("id") long id) {
         log.info("Modifier Expert", exp);
-        Set<Role> roles = new HashSet<>();
         Optional<Expert> expOptional = Exp_repo.findById(id);
         if (expOptional.isEmpty())
             return ResponseEntity.notFound().build();
@@ -89,12 +99,6 @@ public class ExpertController {
         e.setNom(exp.getNom());
         e.setPrenom(exp.getPrenom());
         e.setUsername(exp.getUsername());
-        String hashPW=bCryptPasswordEncoder.encode(exp.getPassword());
-        e.setPassword(hashPW);
-        Role expRole = roleRepository.findByName(ERole.ROLE_EXP)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        roles.add(expRole);
-        exp.setRoles(roles);
         Expert result= Exp_repo.save(e);
         return ResponseEntity.ok().body(result);
     }

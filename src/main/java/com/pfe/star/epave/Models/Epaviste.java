@@ -12,11 +12,8 @@ import java.util.Set;
 @Entity
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Epaviste extends Utilisateur {
-    @NotNull
     @Column(unique = true)
     private String matriculeFiscale;
-    @NotNull
-    private boolean compteActif=false;
     @OneToMany(mappedBy="epaviste",cascade=CascadeType.ALL)
     @JsonIgnore
     private Set<Offre>offres= new HashSet<>();
@@ -25,10 +22,9 @@ public class Epaviste extends Utilisateur {
     public Epaviste() {
     }
 
-    public Epaviste(String cin, @NotNull String username,@Email @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String matriculeFiscale, @NotNull boolean compteActif, Set<Offre> offres) {
+    public Epaviste(String cin,  String username,@Email  String password, String nom,  String prenom, String matriculeFiscale,Set<Offre> offres) {
         super(cin, username, password, nom, prenom);
         this.matriculeFiscale = matriculeFiscale;
-        this.compteActif = compteActif;
         this.offres = offres;
     }
 
@@ -40,13 +36,6 @@ public class Epaviste extends Utilisateur {
         this.matriculeFiscale = matriculeFiscale;
     }
 
-    public boolean isCompteActif() {
-        return compteActif;
-    }
-
-    public void setCompteActif(boolean compteActif) {
-        this.compteActif = compteActif;
-    }
 
     public Set<Offre> getOffres() {
         return offres;
