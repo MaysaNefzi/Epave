@@ -36,7 +36,7 @@ public class Sinistre {
     @NotNull
     private String modele;
     @NotNull
-    private double valeurVenale;
+    private String etatSinistre;
     @NotNull
     @ManyToOne
     @JoinColumn(name="police_id" )
@@ -54,8 +54,7 @@ public class Sinistre {
 
     public Sinistre(){}
 
-    public Sinistre(String numeroSinistre, String immatriculation, LocalDate dateAccident, String numChassis, String marque,Boolean epave, String modele, double valeurVenale, Police police, Expert expert, Set<Rapport> rapports,
-                    Set<Photo> photos  ) {
+    public Sinistre(@NotNull String numeroSinistre, @NotNull String immatriculation, @NotNull LocalDate dateAccident, @NotNull String numChassis, @NotNull String marque, @NotNull Boolean epave, @NotNull String modele, @NotNull String etatSinistre, @NotNull Police police, @NotNull Expert expert, Set<Rapport> rapports, Set<Photo> photos) {
         this.numeroSinistre = numeroSinistre;
         this.immatriculation = immatriculation;
         this.dateAccident = dateAccident;
@@ -63,12 +62,11 @@ public class Sinistre {
         this.marque = marque;
         this.epave = epave;
         this.modele = modele;
-        this.valeurVenale = valeurVenale;
+        this.etatSinistre = etatSinistre;
         this.police = police;
         this.expert = expert;
         this.rapports = rapports;
         this.photos = photos;
-
     }
 
     public Long getId() {
@@ -135,14 +133,6 @@ public class Sinistre {
         this.modele = modele;
     }
 
-    public double getValeurVenale() {
-        return valeurVenale;
-    }
-
-    public void setValeurVenale(double valeurVenale) {
-        this.valeurVenale = valeurVenale;
-    }
-
     public Police getPolice() {
         return police;
     }
@@ -173,5 +163,13 @@ public class Sinistre {
 
     public void setPhotos(Set<Photo> photos) {
         this.photos = photos;
+    }
+
+    public String getEtatSinistre() {
+        return etatSinistre;
+    }
+
+    public void setEtatSinistre(String etatSinistre) {
+        this.etatSinistre = etatSinistre;
     }
 }

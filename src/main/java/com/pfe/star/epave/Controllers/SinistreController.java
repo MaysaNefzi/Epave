@@ -100,7 +100,7 @@ public class SinistreController {
         sin.setMarque(sinistre.getMarque());
         sin.setEpave(sinistre.getEpave());
         sin.setModele(sinistre.getModele());
-        sin.setValeurVenale(sinistre.getValeurVenale());
+        sin.setEtatSinistre(sinistre.getEtatSinistre());
         Sinistre result= Sin_repo.save(sin);
         return ResponseEntity.ok().body(result);
     }

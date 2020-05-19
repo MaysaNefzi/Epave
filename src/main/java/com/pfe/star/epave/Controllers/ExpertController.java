@@ -99,6 +99,7 @@ public class ExpertController {
         e.setNom(exp.getNom());
         e.setPrenom(exp.getPrenom());
         e.setUsername(exp.getUsername());
+        e.setTel(exp.getTel());
         Expert result= Exp_repo.save(e);
         return ResponseEntity.ok().body(result);
     }

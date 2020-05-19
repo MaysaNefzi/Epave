@@ -104,6 +104,7 @@ public class EpavisteController {
         e.setUsername(epav.getUsername());
         e.setNom(epav.getNom());
         e.setPrenom(epav.getPrenom());
+        e.setTel(epav.getTel());
         Set<Role> roles = new HashSet<>();
         Role epavRole = roleRepository.findByName(ERole.ROLE_EPV)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));

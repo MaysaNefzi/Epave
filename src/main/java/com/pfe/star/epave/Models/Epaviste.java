@@ -17,15 +17,17 @@ public class Epaviste extends Utilisateur {
     @OneToMany(mappedBy="epaviste",cascade=CascadeType.ALL)
     @JsonIgnore
     private Set<Offre>offres= new HashSet<>();
+    private Long tel;
 
 
     public Epaviste() {
     }
 
-    public Epaviste(String cin,  String username,@Email  String password, String nom,  String prenom, String matriculeFiscale,Set<Offre> offres) {
+    public Epaviste(String cin, @Email String username, String password, String nom, String prenom, String matriculeFiscale, Set<Offre> offres, Long tel) {
         super(cin, username, password, nom, prenom);
         this.matriculeFiscale = matriculeFiscale;
         this.offres = offres;
+        this.tel = tel;
     }
 
     public String getMatriculeFiscale() {
@@ -43,5 +45,13 @@ public class Epaviste extends Utilisateur {
 
     public void setOffres(Set<Offre> offres) {
         this.offres = offres;
+    }
+
+    public Long getTel() {
+        return tel;
+    }
+
+    public void setTel(Long tel) {
+        this.tel = tel;
     }
 }
