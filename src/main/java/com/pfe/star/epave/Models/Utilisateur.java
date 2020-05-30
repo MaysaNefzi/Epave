@@ -17,17 +17,13 @@ public class Utilisateur {
     @Id
     @GeneratedValue
     private Long id;
-    @NotNull
     @Column(unique = true)
     private String cin;
     @Email
-    @NotNull
+    @Column(name = "email")
     private String username;
-    @NotNull
     private String password;
-    @NotNull
     private String nom;
-    @NotNull
     private String prenom;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -40,7 +36,7 @@ public class Utilisateur {
     }
 
 
-    public Utilisateur(@NotNull String cin,@Email @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom) {
+    public Utilisateur( String cin,@Email String username,  String password, String nom, String prenom) {
         this.cin = cin;
         this.username = username;
         this.password = password;
@@ -48,11 +44,12 @@ public class Utilisateur {
         this.prenom = prenom;
     }
 
-    public Utilisateur(Long id, @Email @NotNull String username, @NotNull String password) {
+    public Utilisateur(Long id, @Email  String username, String password) {
         this.id = id;
         this.username = username;
         this.password = password;
     }
+
 
     public Long getId() {
         return id;

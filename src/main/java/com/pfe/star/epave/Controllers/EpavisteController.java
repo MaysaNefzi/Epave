@@ -6,6 +6,8 @@ import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Repositories.EpavisteRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
+import com.pfe.star.epave.Security.Services.MailSenderService;
+import com.pfe.star.epave.Security.Services.GeneratorService;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/epaviste")
 public class EpavisteController {
     private final Logger log = LoggerFactory.getLogger(EpavisteController.class);
+    @Autowired
+    MailSenderService mailSender;
+    @Autowired
+    GeneratorService generator;
     @Autowired
     private final EpavisteRepository Epav_repo;
     @Autowired
@@ -68,14 +74,19 @@ public class EpavisteController {
                     .body(new MessageResponse("Error: Email est déjà utilisé"));
         }
         log.info("Ajouter un nouveau Epaviste", epav);
-        String hashPW=bCryptPasswordEncoder.encode(epav.getPassword());
-        epav.setPassword(hashPW);
+        String pwd=generator.Pwdgenerator();
+        epav.setPassword(bCryptPasswordEncoder.encode(pwd));
         Set<Role> roles = new HashSet<>();
         Role epavRole = roleRepository.findByName(ERole.ROLE_EPV)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(epavRole);
         epav.setRoles(roles);
         Epaviste result = Epav_repo.save(epav);
+        mailSender.sendEmail(epav.getUsername(),"Mot de passe","Bonjour Mme/Mr "+epav.getNom()
+                +"\n \n L'équipe STAR est heureuse de vous voir parmi elle. \n Vous trouvez ci-dessous votre mot de passe ,vous pouvez le changer quand vous voulez\n \n"
+                +pwd
+                +"\n Vous etes inscrit comme etant un epaviste"
+                +"\n \n Merci");
         return ResponseEntity.created(new URI("/ajouter_epav" + result.getCin())).body(result);
     }
 
@@ -91,11 +102,9 @@ public class EpavisteController {
         e.setCin(epav.getCin());
         e.setMatriculeFiscale(epav.getMatriculeFiscale());
         e.setUsername(epav.getUsername());
-        String hashPW=bCryptPasswordEncoder.encode(epav.getPassword());
-        e.setPassword(hashPW);
         e.setNom(epav.getNom());
         e.setPrenom(epav.getPrenom());
-        e.setCompteActif(epav.isCompteActif());
+        e.setTel(epav.getTel());
         Set<Role> roles = new HashSet<>();
         Role epavRole = roleRepository.findByName(ERole.ROLE_EPV)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));

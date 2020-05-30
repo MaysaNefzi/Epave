@@ -74,7 +74,7 @@ public class AuthController {
                 roles));
     }
 
-    @PostMapping("/signup")
+    /*@PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -85,9 +85,7 @@ public class AuthController {
 
         Utilisateur utilisateur=new Utilisateur(signUpRequest.getCin(),
                 signUpRequest.getUsername(),
-                encoder.encode((signUpRequest.getPassword())),
-                signUpRequest.getNom(),
-                signUpRequest.getPrenom());
+                encoder.encode((signUpRequest.getPassword())));
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -106,5 +104,5 @@ public class AuthController {
             });
         }
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
-    }
+    }*/
 }

@@ -16,13 +16,23 @@ public class Expert extends Utilisateur {
     @OneToMany(mappedBy="expert", cascade= CascadeType.ALL)
     @JsonIgnore
     private Set<Sinistre>sinistres;
+    private Long tel;
 
     public Expert() {
     }
 
-    public Expert(String cin,@Email @NotNull String username, @NotNull String password, @NotNull String nom, @NotNull String prenom, Set<Sinistre> sinistres) {
+    public Expert(String cin, @Email String username, String password, String nom, String prenom, Set<Sinistre> sinistres, Long tel) {
         super(cin, username, password, nom, prenom);
         this.sinistres = sinistres;
+        this.tel = tel;
+    }
+
+    public Long getTel() {
+        return tel;
+    }
+
+    public void setTel(Long tel) {
+        this.tel = tel;
     }
 
     public Set<Sinistre> getSinistres() {

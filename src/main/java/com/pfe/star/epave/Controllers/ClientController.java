@@ -2,8 +2,14 @@ package com.pfe.star.epave.Controllers;
 
 import com.pfe.star.epave.Models.*;
 import com.pfe.star.epave.Repositories.ClientRepository;
+import com.pfe.star.epave.Repositories.ConfirmationTokenRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
+import com.pfe.star.epave.Security.Payload.Request.ConfirmationRequest;
+import com.pfe.star.epave.Security.Payload.Request.SignupRequest;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
+import com.pfe.star.epave.Security.Services.GeneratorService;
+import com.pfe.star.epave.Security.Services.MailSenderService;
+import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,9 +34,18 @@ public class ClientController {
     @Autowired
     private final ClientRepository C_repo;
     @Autowired
+    ConfirmationTokenRepository Confirm_Repo;
+    @Autowired
+    MailSenderService mailSender;
+    @Autowired
+    GeneratorService generator;
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     RoleRepository roleRepository;
+    public final static String LOGIN_URL= "/authentif/signin";
+
+
     public ClientController(ClientRepository c_repo){
         C_repo = c_repo;
     }
@@ -75,8 +93,6 @@ public class ClientController {
                     .body(new MessageResponse("Error: Email est déjà utilisé"));
         }
         log.info("Créer un compte client", client);
-        String hashPW=bCryptPasswordEncoder.encode(client.getPassword());
-        client.setPassword(hashPW);
         Set<Role> roles = new HashSet<>();
         Role cRole = roleRepository.findByName(ERole.ROLE_CLT)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -86,31 +102,96 @@ public class ClientController {
         return ResponseEntity.created(new URI("/ajouter_compte_client" + result.getCin())).body(result);
     }
 
-    @PutMapping("/modifier_compte_client/{id}")
+    @PutMapping("/signup")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Client> modifier_compte_client(@Valid @RequestBody Client client, @PathVariable("id") long id) {
-        log.info("Modifier compte Client", client);
-        Optional<Client> clientOptional = C_repo.findById(id);
-        if (clientOptional.isEmpty())
-            return ResponseEntity.notFound().build();
-        Client c = clientOptional.get();
-        c.setCin(client.getCin());
-        c.setId(id);
-        c.setNom(client.getNom());
-        c.setPrenom(client.getPrenom());
-        c.setUsername(client.getUsername());
-        String hashPW=bCryptPasswordEncoder.encode(client.getPassword());
-        c.setPassword(hashPW);
-        c.setAdresse(client.getAdresse());
-        c.setDelegation(client.getDelegation());
-        c.setGouvernement(client.getGouvernement());
-        c.setTel1(client.getTel1());
-        c.setTel2(client.getTel2());
+    public ResponseEntity<?> RegisterClient(@Valid @RequestBody SignupRequest signupRequest) {
+       Optional<Client> client = C_repo.findByCin(signupRequest.getCin());
+        if (client.isEmpty())
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Cin introuvable!"));
+        Client c = client.get();
+        if (c.isCompteActif())
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Vous avez un compte deja"));
+        c.setCin(c.getCin());
+        c.setId(c.getId());
+        c.setNom(c.getNom());
+        c.setPrenom(c.getPrenom());
+        c.setAdresse(c.getAdresse());
+        c.setDelegation(c.getDelegation());
+        c.setGouvernement(c.getGouvernement());
+        c.setTel1(c.getTel1());
+        c.setTel2(c.getTel2());
         Set<Role> roles = new HashSet<>();
         Role cRole = roleRepository.findByName(ERole.ROLE_CLT)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(cRole);
-        Client result= C_repo.save(c);
-        return ResponseEntity.ok().body(result);
+        ConfirmationToken confirmationToken = new ConfirmationToken();
+        confirmationToken.setClient(c);
+        Date creation =new Date();
+        confirmationToken.setCreatedDate(creation);
+        confirmationToken.setExpiredDate(new Date(creation.getTime()+(1000 * 60 * 60)));//expiration code apres 1h
+        String code=generator.Codegenerator();
+        confirmationToken.setConfirmationToken(code);
+        confirmationToken.setClient(c);
+        confirmationToken.setIdClient(c.getId());
+        Confirm_Repo.save(confirmationToken);
+        mailSender.sendEmail(signupRequest.getUsername(),"Code de Confirmation","Bonjour Mme/Mr "+c.getNom()
+                +"\n \n L'équipe STAR est heureuse de vous voir parmi elle. \n Vous trouvez ci-dessous votre code de confirmation ,merci de confirmer votre inscription tout de suite\n \n"
+                +code
+                +"\n \n Merci");
+        c.setUsername(signupRequest.getUsername());
+        c.setPassword(bCryptPasswordEncoder.encode(signupRequest.getPassword()));
+        C_repo.save(c);
+        return ResponseEntity.ok(new MessageResponse("En attente de confirmation"));
     }
+
+    @PostMapping("/confirm-account")
+    public ResponseEntity<?>confirmation(@RequestBody ConfirmationRequest confirmationRequest){
+        Date now =new Date();
+        ConfirmationToken token = Confirm_Repo.findByConfirmationToken(confirmationRequest.getCode());
+        Map<String, String> accountConfirmation = new HashMap<>();
+        accountConfirmation.put("accountConfirmation", "true");
+        Client client = C_repo.getById(token.getClient().getId());
+        if(token== null)
+        {
+            accountConfirmation.put("accountConfirmation", "false");
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Code invalide"));
+        }
+        if (now.compareTo(token.getExpiredDate())>0){
+            accountConfirmation.put("accountConfirmation", "false");
+            Confirm_Repo.deleteConfirmationToken(token.getIdClient());
+            C_repo.deleteMailPassword(token.getIdClient(),null);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Code expiré"));
+        }
+        accountConfirmation.put("username", client.getUsername());
+        client.setCompteActif(true);
+        C_repo.save(client);
+        Confirm_Repo.deleteConfirmationToken(token.getIdClient());
+        return ResponseEntity.ok(new MessageResponse("Client Confirmé"));
+    }
+    @DeleteMapping("/supprimer_client/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Map<String, Boolean> supprimer_client(@PathVariable Long id) {
+        Client c = null;
+        try {
+            c = C_repo.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Client introuvable pour cet id: " + id));
+        } catch (NotFoundException ex) {
+            ex.printStackTrace();
+        }
+        Confirm_Repo.deleteConfirmationToken(id);
+        C_repo.delete(c);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("Client supprimé avec succes", Boolean.TRUE);
+        return response;
+    }
+
 }

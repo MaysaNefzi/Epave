@@ -12,24 +12,22 @@ import java.util.Set;
 @Entity
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Epaviste extends Utilisateur {
-    @NotNull
     @Column(unique = true)
     private String matriculeFiscale;
-    @NotNull
-    private boolean compteActif=false;
     @OneToMany(mappedBy="epaviste",cascade=CascadeType.ALL)
     @JsonIgnore
     private Set<Offre>offres= new HashSet<>();
+    private Long tel;
 
 
     public Epaviste() {
     }
 
-    public Epaviste(String cin, @NotNull String username,@Email @NotNull String password, @NotNull String nom, @NotNull String prenom, @NotNull String matriculeFiscale, @NotNull boolean compteActif, Set<Offre> offres) {
+    public Epaviste(String cin, @Email String username, String password, String nom, String prenom, String matriculeFiscale, Set<Offre> offres, Long tel) {
         super(cin, username, password, nom, prenom);
         this.matriculeFiscale = matriculeFiscale;
-        this.compteActif = compteActif;
         this.offres = offres;
+        this.tel = tel;
     }
 
     public String getMatriculeFiscale() {
@@ -40,13 +38,6 @@ public class Epaviste extends Utilisateur {
         this.matriculeFiscale = matriculeFiscale;
     }
 
-    public boolean isCompteActif() {
-        return compteActif;
-    }
-
-    public void setCompteActif(boolean compteActif) {
-        this.compteActif = compteActif;
-    }
 
     public Set<Offre> getOffres() {
         return offres;
@@ -54,5 +45,13 @@ public class Epaviste extends Utilisateur {
 
     public void setOffres(Set<Offre> offres) {
         this.offres = offres;
+    }
+
+    public Long getTel() {
+        return tel;
+    }
+
+    public void setTel(Long tel) {
+        this.tel = tel;
     }
 }

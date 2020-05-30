@@ -1,12 +1,10 @@
 package com.pfe.star.epave.Controllers;
 
-import com.pfe.star.epave.Models.ERole;
-import com.pfe.star.epave.Models.Role;
 import com.pfe.star.epave.Models.Utilisateur;
 import com.pfe.star.epave.Repositories.RoleRepository;
 import com.pfe.star.epave.Repositories.UtilisateurRepository;
 import com.pfe.star.epave.Security.Payload.Request.ChangePWDRequest;
-import com.pfe.star.epave.Security.Payload.Request.SignupRequest;
+
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
@@ -14,13 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,7 +57,7 @@ public class UtilisateurController {
         return U_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
     }
 
-    @PutMapping("/modifier_user/{id}")
+    /*@PutMapping("/modifier_user/{id}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<Utilisateur> modifier_user(@Valid @RequestBody Utilisateur utilisateur, @PathVariable("id") long id) {
         log.info("Modifier Utilisateur", utilisateur);
@@ -73,13 +69,11 @@ public class UtilisateurController {
         u.setId(id);
         u.setNom(utilisateur.getNom());
         u.setPrenom(utilisateur.getPrenom());
-       u.setUsername(utilisateur.getUsername());
-        String hashPW=encoder.encode(utilisateur.getPassword());
-        u.setPassword(hashPW);
+        u.setUsername(utilisateur.getUsername());
         u.setRoles(utilisateur.getRoles());
         Utilisateur result= U_repo.save(u);
         return ResponseEntity.ok().body(result);
-    }
+    }*/
     @PutMapping("/modifier_password/{id}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> modifier_password(@Valid @RequestBody ChangePWDRequest changePWDRequest, @PathVariable("id") long id) {
