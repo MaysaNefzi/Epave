@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
@@ -33,7 +34,7 @@ public class EpavisteController {
     @Autowired
     private final EpavisteRepository Epav_repo;
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    PasswordEncoder encoder;
     public EpavisteController(EpavisteRepository epav_repo){
         Epav_repo=epav_repo;
     }
@@ -75,7 +76,7 @@ public class EpavisteController {
         }
         log.info("Ajouter un nouveau Epaviste", epav);
         String pwd=generator.Pwdgenerator();
-        epav.setPassword(bCryptPasswordEncoder.encode(pwd));
+        epav.setPassword(encoder.encode(pwd));
         Set<Role> roles = new HashSet<>();
         Role epavRole = roleRepository.findByName(ERole.ROLE_EPV)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));

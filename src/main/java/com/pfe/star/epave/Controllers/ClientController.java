@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -40,7 +41,7 @@ public class ClientController {
     @Autowired
     GeneratorService generator;
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    PasswordEncoder encoder;
     @Autowired
     RoleRepository roleRepository;
     public final static String LOGIN_URL= "/authentif/signin";
@@ -87,11 +88,6 @@ public class ClientController {
     @PostMapping("/ajouter_compte_client")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> ajouter_compte_client(@Valid @RequestBody Client client) throws URISyntaxException {
-        if (C_repo.existsByUsername(client.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email est déjà utilisé"));
-        }
         log.info("Créer un compte client", client);
         Set<Role> roles = new HashSet<>();
         Role cRole = roleRepository.findByName(ERole.ROLE_CLT)
@@ -143,7 +139,7 @@ public class ClientController {
                 +code
                 +"\n \n Merci");
         c.setUsername(signupRequest.getUsername());
-        c.setPassword(bCryptPasswordEncoder.encode(signupRequest.getPassword()));
+        c.setPassword(encoder.encode(signupRequest.getPassword()));
         C_repo.save(c);
         return ResponseEntity.ok(new MessageResponse("En attente de confirmation"));
     }

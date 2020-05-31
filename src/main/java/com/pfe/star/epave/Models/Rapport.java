@@ -21,6 +21,7 @@ public class Rapport {
     private double valeurVenale;
     @NotNull
     private String lieuVehicule;
+    @NotNull boolean verif=true;
     @NotNull
     @ManyToOne
     @JoinColumn(name="sinistre_id" )
@@ -29,11 +30,12 @@ public class Rapport {
     public Rapport() {
     }
 
-    public Rapport(@NotNull String degatsConstates, @NotNull double estimationValeurEpave, @NotNull double valeurVenale, @NotNull String lieuVehicule, @NotNull Sinistre sinistre) {
+    public Rapport(@NotNull String degatsConstates, @NotNull double estimationValeurEpave, @NotNull double valeurVenale, @NotNull String lieuVehicule, @NotNull boolean verif, @NotNull Sinistre sinistre) {
         this.degatsConstates = degatsConstates;
         this.estimationValeurEpave = estimationValeurEpave;
         this.valeurVenale = valeurVenale;
         this.lieuVehicule = lieuVehicule;
+        this.verif = verif;
         this.sinistre = sinistre;
     }
 
@@ -83,5 +85,13 @@ public class Rapport {
 
     public void setSinistre(Sinistre sinistre) {
         this.sinistre = sinistre;
+    }
+
+    public boolean isVerif() {
+        return verif;
+    }
+
+    public void setVerif(boolean verif) {
+        this.verif = verif;
     }
 }
