@@ -67,6 +67,7 @@ public class OffreController {
         Offre result = Offre_repo.save(offre);
         return ResponseEntity.created(new URI("/ajouter_offre" + result.getId())).body(result);
     }
+
     @PutMapping("modifier_montant")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Offre> modifier_montant(@Valid @RequestBody Offre offre, @PathVariable("id") long id) {

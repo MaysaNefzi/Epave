@@ -36,8 +36,8 @@ public class PoliceController {
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Police> police_ByNumPolice(@PathVariable String numeroPolice) {
         return Police_repo.findAll().stream().filter(x -> x.getNumPolice().equals(numeroPolice)).collect(Collectors.toList());
-
     }
+
    @PostMapping("/ajouter_police")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Police> ajouter_police(@Valid @RequestBody Police police) throws URISyntaxException {
@@ -50,6 +50,7 @@ public class PoliceController {
     public Collection<Police> liste_police(){
         return Police_repo.findAll();
     }
+
     @GetMapping("/police_BySin/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Long police_BySin(@PathVariable Long id){
@@ -59,5 +60,12 @@ public class PoliceController {
         return id_police;
 
     }
+
+    @GetMapping("/police_ByClient/{idClt}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Police> police_ByNumPolice(@PathVariable Long idClt) {
+        return Police_repo.findAll().stream().filter(x -> x.getClient().getId().equals(idClt)).collect(Collectors.toList());
+    }
+
 
 }

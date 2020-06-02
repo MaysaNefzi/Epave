@@ -1,5 +1,6 @@
 package com.pfe.star.epave.Controllers;
 
+import com.pfe.star.epave.Models.Rapport;
 import com.pfe.star.epave.Models.RapportFinal;
 import com.pfe.star.epave.Repositories.RapportFinalRepository;
 import javassist.NotFoundException;
@@ -17,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/RapportFinal")
@@ -40,6 +42,12 @@ public class RapportFinalController {
         return rapportf.map(response-> ResponseEntity.ok().body(response))
                 .orElse((new ResponseEntity<>(HttpStatus.NOT_FOUND)));
     }
+    @GetMapping("/rapport_final_BySinId/{sin}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Rapport> rapport_ByNumSinistre(@PathVariable Long sin) {
+        return RF_repo.findAll().stream().filter(x -> x.getSinistre().getId().equals(sin)).collect(Collectors.toList());
+
+    }
     @PostMapping("/ajouter_rapport_final")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<RapportFinal> ajouter_rapport_final(@Valid @RequestBody RapportFinal rapF) throws URISyntaxException {
@@ -47,7 +55,7 @@ public class RapportFinalController {
         RapportFinal result = RF_repo.save(rapF);
         return ResponseEntity.created(new URI("/ajouter_rapport_final" + result.getId())).body(result);
     }
-    @PutMapping("/modifier_rapport_final/{id}")
+  /*  @PutMapping("/modifier_rapport_final/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<RapportFinal>modifier_rapport_final(@Valid @RequestBody RapportFinal rapF,@PathVariable("id") long id){
         log.info("Modifier Un rapport final", rapF);
@@ -63,7 +71,7 @@ public class RapportFinalController {
         rf.setLieuVehicule(rapF.getLieuVehicule());
         RapportFinal result = RF_repo.save(rf);
         return  ResponseEntity.ok().body(result);
-    }
+    }*/
     @DeleteMapping("/supprimer_rapport_final/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Boolean> supprimer_rapport_final(@PathVariable Long id) {

@@ -1,11 +1,14 @@
 package com.pfe.star.epave.Models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class Photo {
@@ -17,16 +20,17 @@ public class Photo {
     @NotNull
     private String ajouteePar;
     @NotNull
-    private LocalDate dateAjout;
+    private LocalDateTime dateAjout;
     @NotNull
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name="sinistre_id" )
     private Sinistre sinistre;
 
     public Photo() {
     }
 
-    public Photo(String urlPhoto, String ajouteePar, LocalDate dateAjout, Sinistre sinistre) {
+    public Photo(String urlPhoto, String ajouteePar, LocalDateTime dateAjout, Sinistre sinistre) {
         this.urlPhoto = urlPhoto;
         this.ajouteePar = ajouteePar;
         this.dateAjout = dateAjout;
@@ -57,11 +61,11 @@ public class Photo {
         this.ajouteePar = ajouteePar;
     }
 
-    public LocalDate getDateAjout() {
+    public LocalDateTime getDateAjout() {
         return dateAjout;
     }
 
-    public void setDateAjout(LocalDate dateAjout) {
+    public void setDateAjout(LocalDateTime dateAjout) {
         this.dateAjout = dateAjout;
     }
 

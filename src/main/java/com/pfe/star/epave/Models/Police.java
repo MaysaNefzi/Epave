@@ -23,10 +23,10 @@ public class Police {
     @NotNull
     private String branchePolice;
     @NotNull
-    @JsonFormat(pattern = "MM/dd/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dateEffet;
     @NotNull
-    @JsonFormat(pattern = "MM/dd/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dateEcheance;
     @NotNull
     private String etatPolice;

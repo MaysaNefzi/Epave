@@ -3,6 +3,7 @@ package com.pfe.star.epave.Controllers;
 import com.pfe.star.epave.Models.ERole;
 import com.pfe.star.epave.Models.Epaviste;
 import com.pfe.star.epave.Models.Role;
+import com.pfe.star.epave.Models.Utilisateur;
 import com.pfe.star.epave.Repositories.EpavisteRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
@@ -62,8 +63,18 @@ public class EpavisteController {
     @GetMapping("/epav_ByCin/{cin}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Epaviste> epavByCin(@PathVariable String cin) {
-        return Epav_repo.findAll().stream().filter(x -> x.getMatriculeFiscale().equals(cin)).collect(Collectors.toList());
+        return Epav_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
 
+    }
+//    @GetMapping("/epav_ByNom/{username}")
+//    @CrossOrigin(origins = "*")
+//    public Collection<Utilisateur> user_ByNom(@PathVariable String username) {
+//        return Epav_repo.findAll().stream().filter(x -> x.getUsername().equals(username)).collect(Collectors.toList());
+//    }
+    @GetMapping("/epav_ByEmail/{email}")
+    @CrossOrigin(origins = "*")
+    public Collection<Utilisateur> gest_ByEmail(@PathVariable String email) {
+        return Epav_repo.findAll().stream().filter(x -> x.getUsername().equals(email)).collect(Collectors.toList());
     }
 
     @PostMapping("/ajouter_epav")

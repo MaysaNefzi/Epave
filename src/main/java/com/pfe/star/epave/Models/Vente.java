@@ -20,10 +20,10 @@ public class Vente {
     private Long id;
   //  @NotNull
     @JsonFormat(pattern = "MM/dd/yyyy")
-    private LocalDate dateDebut;
+    private LocalDateTime dateDebut;
 //    @NotNull
     @JsonFormat(pattern = "MM/dd/yyyy")
-    private LocalDate dateFin;
+    private LocalDateTime dateFin;
     @NotNull
     private int duree;
     @NotNull
@@ -47,7 +47,7 @@ public class Vente {
     public Vente() {
     }
 
-    public Vente(@NotNull LocalDate dateDebut, @NotNull LocalDate dateFin, int duree, @NotNull String description, @NotNull Boolean enchere, double prixDebut,
+    public Vente(@NotNull LocalDateTime dateDebut, @NotNull LocalDateTime dateFin, int duree, @NotNull String description, @NotNull Boolean enchere, double prixDebut,
                  @NotNull Sinistre sinistre, @NotNull Set<Epaviste> epavistes, @NotNull Gestionnaire gestionnaire) {
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
@@ -67,19 +67,19 @@ public class Vente {
         this.id = id;
     }
 
-    public LocalDate getDateDebut() {
+    public LocalDateTime getDateDebut() {
         return dateDebut;
     }
 
-    public void setDateDebut(LocalDate dateDebut) {
+    public void setDateDebut(LocalDateTime dateDebut) {
         this.dateDebut = dateDebut;
     }
 
-    public LocalDate getDateFin() {
+    public LocalDateTime getDateFin() {
         return dateFin;
     }
 
-    public void setDateFin(LocalDate dateFin) {
+    public void setDateFin(LocalDateTime dateFin) {
         this.dateFin = dateFin;
     }
 

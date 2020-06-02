@@ -2,6 +2,7 @@ package com.pfe.star.epave.Controllers;
 
 
 import com.pfe.star.epave.Models.Offre;
+import com.pfe.star.epave.Models.Rapport;
 import com.pfe.star.epave.Models.Vente;
 import com.pfe.star.epave.Repositories.OffreRepository;
 import com.pfe.star.epave.Repositories.VenteRepository;
@@ -62,13 +63,29 @@ public class VenteController {
     public List<Vente> Vente_enchre_By_Epv(@PathVariable("id") Long id){
         return V_repo.Vente_By_Epv(id).stream().filter(this::est_Enchere).collect(Collectors.toList());
     }
+    //all vente participee ecnhere
+    @GetMapping("/vente_enchre_encours_ByEpv/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Vente> Vente_enchre__encours_By_Epv(@PathVariable("id") Long id){
+        LocalDateTime d = LocalDateTime.now();
+        List<Vente> L =  V_repo.Vente_By_Epv(id).stream().filter(this::est_Enchere).collect(Collectors.toList());
+        return  L.stream().filter(x -> x.getDateFin().isAfter(d)).collect(Collectors.toList());
+
+    }
 
     // vente en cours participée
     @GetMapping("/vente_encours_By_Epv/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public List<Vente> Vente_encours_By_Epv(@PathVariable("id") Long id){
-        LocalDate d = LocalDate.now();
+        LocalDateTime d = LocalDateTime.now();
         return  V_repo.Vente_By_Epv(id).stream().filter(x -> x.getDateFin().isAfter(d)).collect(Collectors.toList());
+    }
+
+    @GetMapping("/vente_BySinId/{sin}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Vente> rapport_ByNumSinistre(@PathVariable Long sin) {
+        return V_repo.findAll().stream().filter(x -> x.getSinistre().getId().equals(sin)).collect(Collectors.toList());
+
     }
 
     // vente encours non participée
@@ -80,7 +97,7 @@ public class VenteController {
         List<Vente> diff = l1.stream()
                 .filter(i -> !l2.contains(i))
                 .collect (Collectors.toList());
-        LocalDate d = LocalDate.now();
+        LocalDateTime d = LocalDateTime.now();
         return diff.stream().filter(x -> x.getDateFin().isAfter(d)).collect(Collectors.toList());
     }
 
@@ -88,8 +105,17 @@ public class VenteController {
     @GetMapping("/vente_terminee_By_Epv/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public List<Vente> Vente_terminee_By_Epv(@PathVariable("id") Long id){
-        LocalDate d = LocalDate.now();
-        return  V_repo.Vente_By_Epv(id).stream().filter(x -> x.getDateFin().isBefore(d)).collect(Collectors.toList());
+        LocalDateTime d = LocalDateTime.now();
+        List<Vente> l1 = V_repo.Vente_By_Epv(id);
+        List<Vente> l2 = new ArrayList<>() ;
+        for(int i=0;i<l1.size();i++){
+            int x = l1.get(i).getDateFin().compareTo(d);
+            log.info("compare   :   " + x);
+            if(x<=0)
+                l2.add(l1.get(i));
+
+        }
+        return  l2;
     }
 
     //
@@ -97,10 +123,11 @@ public class VenteController {
     @GetMapping("/vente_Encours")
     @CrossOrigin(origins = "http://localhost:4200")
     public List<Vente> Vente_Encours(){
-        LocalDate d = LocalDate.now();
+        LocalDateTime d = LocalDateTime.now();
         return V_repo.findAllByDateFin().stream().filter(x -> x.getDateFin().isAfter(d)).collect(Collectors.toList());
 
     }
+
 
     /*public Collection<Vente> vente_ByEpv(@PathVariable("idE") Long idE ) {
         Collection<Offre> o = O_repo.OffreByEpv(idE);
@@ -113,6 +140,7 @@ public class VenteController {
         Vente result = V_repo.save(vente);
         return ResponseEntity.created(new URI("/ajouter_vente" + result.getId())).body(result);
     }
+
     private boolean est_Enchere(Vente sin) {
         return sin.getEnchere().equals(enchere);
     }
@@ -129,8 +157,26 @@ public class VenteController {
     public Collection<Vente> liste_appelOffre() {
         return V_repo.findAll().stream().filter(this::est_AppelOffre).collect(Collectors.toList());
     }
+
+    @GetMapping("/Etat/{id}")
+    public boolean Etat(@PathVariable("id") Long id){
+        LocalDateTime now = LocalDateTime.now();
+        Optional<Vente> v = V_repo.findById(id);
+        int x =v.get().getDateFin().compareTo(now);
+        if(x>0){
+            System.out.println("ss   : "+x);
+            return false;
+        }
+        else {
+            System.out.println("mm   : "+x);
+            return true;
+        }
+    }
+
+
+
     public boolean traitement_encours(Vente v){
-        LocalDate now = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
         int x =v.getDateFin().compareTo(now);
         if(x>0){
             System.out.println("ss   : "+x);
@@ -147,6 +193,15 @@ public class VenteController {
     public Collection<Vente> traitement() {
         return V_repo.findAll().stream().filter(this::traitement_encours).collect(Collectors.toList());
     }
+
+
+    @GetMapping("/offre_acceptee/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Offre OffreAcceptee(@PathVariable Long id) {
+        return O_repo.OffreAcceptee(id);
+
+    }
+
 
     @PutMapping("/modifier_vente/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
