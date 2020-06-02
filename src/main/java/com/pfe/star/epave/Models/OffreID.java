@@ -1,9 +1,6 @@
 package com.pfe.star.epave.Models;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -13,7 +10,6 @@ public class OffreID implements Serializable {
     private Long epavisteId;
     @Column(name="vente_id")
     private Long venteId;
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long numOffre;
 
     public OffreID() {
