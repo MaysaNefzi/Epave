@@ -65,6 +65,7 @@ public class RapportController {
         r.setDegatsConstates(rap.getDegatsConstates());
         r.setEstimationValeurEpave(rap.getEstimationValeurEpave());
         r.setLieuVehicule(rap.getLieuVehicule());
+        r.setVerif(rap.isVerif());
         Rapport result = R_repo.save(r);
         return  ResponseEntity.ok().body(result);
     }

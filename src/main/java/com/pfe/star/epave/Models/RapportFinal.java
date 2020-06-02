@@ -19,8 +19,8 @@ public class RapportFinal extends Rapport {
     public RapportFinal() {
     }
 
-    public RapportFinal(@NotNull String degatsConstates, @NotNull double estimationValeurEpave, @NotNull double valeurVenale, @NotNull String lieuVehicule, @NotNull Sinistre sinistre, @NotNull String nomEpaviste, @NotNull String prenomEpaviste, @NotNull double montantAchat) {
-        super(degatsConstates, estimationValeurEpave, valeurVenale, lieuVehicule, sinistre);
+    public RapportFinal(@NotNull String degatsConstates, @NotNull double estimationValeurEpave, @NotNull double valeurVenale, @NotNull String lieuVehicule, @NotNull boolean verif, @NotNull Sinistre sinistre, @NotNull String nomEpaviste, @NotNull String prenomEpaviste, @NotNull double montantAchat) {
+        super(degatsConstates, estimationValeurEpave, valeurVenale, lieuVehicule, verif, sinistre);
         this.nomEpaviste = nomEpaviste;
         this.prenomEpaviste = prenomEpaviste;
         this.montantAchat = montantAchat;

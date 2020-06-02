@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,7 +38,7 @@ public class ExpertController {
         Exp_repo=exp_repo;
     }
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    PasswordEncoder encoder;
     @Autowired
     RoleRepository roleRepository;
 
@@ -72,7 +73,7 @@ public class ExpertController {
         log.info("Ajouter un nouveau Expert", exp);
         Set<Role> roles = new HashSet<>();
         String pwd=generator.Pwdgenerator();
-        exp.setPassword(bCryptPasswordEncoder.encode(pwd));
+        exp.setPassword(encoder.encode(pwd));
         Role expRole = roleRepository.findByName(ERole.ROLE_EXP)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(expRole);

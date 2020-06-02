@@ -42,19 +42,21 @@ public class OffreController {
     public Offre offre_best(@PathVariable("id") Long id){
         return Offre_repo.getOffresoreder(id).get(0);
     }
-    @GetMapping("/offre_ById/{idV}/{idE}")
+    @GetMapping("/offre_ById/{num}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Offre offre_ById(@PathVariable("idE") Long idE ,@PathVariable("idV") Long idV  ) {
-        return Offre_repo.OffreById(idV, idE);
+    public Offre offre_ById(@PathVariable("num") Long numOffre  ) {
+        return Offre_repo.OffreById(numOffre);
     }
-    @GetMapping("/isbest/{idV}/{idE}")
-    public boolean isBest(@PathVariable("idV")Long idV,@PathVariable("idE") Long idE){
+    @GetMapping("/isbest/{idV}/{num}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public boolean isBest(@PathVariable("idV")Long idV,@PathVariable("num") Long numOffre){
         Offre offreM =offre_best(idV);
-        Offre offre= offre_ById(idV, idE);
+        Offre offre= offre_ById(numOffre);
         return offreM.equals(offre);
     }
 
-
+    @GetMapping("/offre_ByEpav/{idE}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Offre> offre_ByEpv(Long idE ) {
         return Offre_repo.OffreByEpv(idE);
     }

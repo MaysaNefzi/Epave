@@ -8,10 +8,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -20,11 +17,10 @@ import java.time.LocalDate;
 public class Offre {
     @EmbeddedId
     private OffreID id;
-    @ManyToOne(optional=false)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="epaviste_id",referencedColumnName = "id",insertable = false,updatable = false)
-
     private Epaviste epaviste;
-    @ManyToOne(optional=false)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="vente_id",referencedColumnName = "id",insertable = false,updatable = false)
     private Vente vente;
     @NotNull
@@ -41,7 +37,7 @@ public class Offre {
     public Offre() {
     }
 
-    public Offre(Epaviste epaviste, Vente vente, LocalDate dateOffre, double montant, String urlJustificatif, boolean offreAcceptee, String commentaire) {
+    public Offre(Epaviste epaviste, Vente vente, @NotNull LocalDate dateOffre, @NotNull double montant, @NotNull String urlJustificatif, @NotNull boolean offreAcceptee, String commentaire) {
         this.epaviste = epaviste;
         this.vente = vente;
         this.dateOffre = dateOffre;
@@ -114,4 +110,5 @@ public class Offre {
     public void setCommentaire(String commentaire) {
         this.commentaire = commentaire;
     }
+
 }

@@ -5,17 +5,18 @@ import com.pfe.star.epave.Repositories.RoleRepository;
 import com.pfe.star.epave.Repositories.UtilisateurRepository;
 import com.pfe.star.epave.Security.Payload.Request.ChangePWDRequest;
 
+import com.pfe.star.epave.Security.Payload.Request.ResetPWDRequest;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
+import com.pfe.star.epave.Security.Services.GeneratorService;
+import com.pfe.star.epave.Security.Services.MailSenderService;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,6 +27,10 @@ public class UtilisateurController {
     private final Logger log = LoggerFactory.getLogger(UtilisateurController.class);
     @Autowired
     private final UtilisateurRepository U_repo;
+    @Autowired
+    MailSenderService mailSender;
+    @Autowired
+    GeneratorService generator;
     @Autowired
     PasswordEncoder encoder;
     @Autowired
@@ -57,23 +62,6 @@ public class UtilisateurController {
         return U_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
     }
 
-    /*@PutMapping("/modifier_user/{id}")
-    @CrossOrigin(origins = "*")
-    public ResponseEntity<Utilisateur> modifier_user(@Valid @RequestBody Utilisateur utilisateur, @PathVariable("id") long id) {
-        log.info("Modifier Utilisateur", utilisateur);
-        Optional<Utilisateur> userOptional = U_repo.findById(id);
-        if (userOptional.isEmpty())
-            return ResponseEntity.notFound().build();
-        Utilisateur u = userOptional.get();
-        u.setCin(utilisateur.getCin());
-        u.setId(id);
-        u.setNom(utilisateur.getNom());
-        u.setPrenom(utilisateur.getPrenom());
-        u.setUsername(utilisateur.getUsername());
-        u.setRoles(utilisateur.getRoles());
-        Utilisateur result= U_repo.save(u);
-        return ResponseEntity.ok().body(result);
-    }*/
     @PutMapping("/modifier_password/{id}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> modifier_password(@Valid @RequestBody ChangePWDRequest changePWDRequest, @PathVariable("id") long id) {
@@ -93,6 +81,23 @@ public class UtilisateurController {
              U_repo.save(u);
             return ResponseEntity.ok().body(new MessageResponse("Mot de passe changé avec succés"));
         }
+    }
+    @PutMapping("/reset_password")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<?> reset_password(@Valid @RequestBody ResetPWDRequest resetPWDRequest){
+        Optional<Utilisateur> userOptional = U_repo.findByUsername(resetPWDRequest.getUsername());
+        if (userOptional.isEmpty())
+            return ResponseEntity.notFound().build();
+        Utilisateur u = userOptional.get();
+        String pwd=generator.Pwdgenerator();
+        u.setPassword(encoder.encode(pwd));
+        mailSender.sendEmail(resetPWDRequest.getUsername(),"Récupérer mot de passe","Bonjour Mme/Mr "+u.getNom()
+                +" \n Vous avez oublié votre mot de passe, la connexion est maintenant disponible avec  le nouveau mot de passe ci-dessous . \n"
+                +"\n Vous pouvez le changer pour plus de sécurité. \n"
+                +pwd
+                +"\n \n Merci");
+        U_repo.save(u);
+        return ResponseEntity.ok().body(new MessageResponse("Mot de passe récupéré avec succés"));
     }
     @DeleteMapping("/supprimer_user/{id}")
     @CrossOrigin(origins = "*")
