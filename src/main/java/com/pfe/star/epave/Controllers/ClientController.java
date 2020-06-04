@@ -5,6 +5,7 @@ import com.pfe.star.epave.Repositories.ClientRepository;
 import com.pfe.star.epave.Repositories.ConfirmationTokenRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
 import com.pfe.star.epave.Security.Payload.Request.ConfirmationRequest;
+import com.pfe.star.epave.Security.Payload.Request.ResetPWDRequest;
 import com.pfe.star.epave.Security.Payload.Request.SignupRequest;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import com.pfe.star.epave.Security.Services.GeneratorService;
@@ -153,26 +154,38 @@ public class ClientController {
         return ResponseEntity.ok(new MessageResponse("En attente de confirmation"));
     }
 
-    @PutMapping("/newCode/{email}")
+    @PutMapping("/newCode")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ConfirmationToken newCode(@PathVariable String email){
-        Client client1 = C_repo.findByEmail(email);
-        Long idC =client1.getId();
-        if(Confirm_Repo.tokenbyidClient(idC).isEmpty())
-            return new ConfirmationToken();
-        ConfirmationToken c= Confirm_Repo.tokenbyidClient(idC).get();
-        Client client = C_repo.findById(idC).get()  ;
+    public ResponseEntity<?> newCode(@Valid @RequestBody ResetPWDRequest r){
+        Client client1 = C_repo.findByEmail(r.getUsername()).get();
+    //    log.info("Id  :  "+client1.getId());
+        ConfirmationToken confirmationToken;
+        if(client1.getPassword()==null) //il n'est pas inscrit
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: non inscrit"));   // non innscrit return objet vide
+        // inscrit : send new code
+        Long idC = client1.getId();
+        if(!Confirm_Repo.tokenbyidClient(idC).isEmpty()){//si code non expiré juste update
+            confirmationToken= Confirm_Repo.tokenbyidClient(idC).get(); // old code
+        }
+        else { // code expiré : creat new code
+            confirmationToken =new ConfirmationToken();
+        }
         Date creation =new Date();
-        c.setCreatedDate(creation);
-        c.setExpiredDate(new Date(creation.getTime()+(1000 * 60 * 60)));//expiration code apres 1h
+        confirmationToken.setCreatedDate(creation);
+        confirmationToken.setExpiredDate(new Date(creation.getTime()+(1000 * 60 * 60)));//expiration code apres 1h
         String code=generator.Codegenerator();
-        c.setConfirmationToken(code);
-        Confirm_Repo.save(c);
-        mailSender.sendEmail(client.getUsername(),"Code de Confirmation","Bonjour Mme/Mr "+client.getNom()
+        confirmationToken.setConfirmationToken(code);
+        confirmationToken.setClient(client1);
+        confirmationToken.setIdClient(client1.getId());
+
+        Confirm_Repo.save(confirmationToken);
+        mailSender.sendEmail(client1.getUsername(),"Code de Confirmation","Bonjour Mme/Mr "+client1.getNom()
                 +"\n \n L'équipe STAR est heureuse de vous voir parmi elle. \n Vous trouvez ci-dessous votre code de confirmation ,merci de confirmer votre inscription tout de suite\n \n"
                 +code
                 +"\n \n Merci");
-        return c;
+        return ResponseEntity.ok(new MessageResponse("Code envoyé"));
     }
 
     @PostMapping("/confirm-account")
