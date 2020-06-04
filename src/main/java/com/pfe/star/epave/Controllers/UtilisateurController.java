@@ -61,7 +61,11 @@ public class UtilisateurController {
     public Collection<Utilisateur> user_ByCin(@PathVariable String cin) {
         return U_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
     }
-
+    @GetMapping("/user_ByEmail/{email}")
+    @CrossOrigin(origins = "*")
+    public Collection<Utilisateur> user_ByEmail(@PathVariable String email) {
+        return U_repo.findAll().stream().filter(x -> x.getUsername().equals(email)).collect(Collectors.toList());
+    }
     @PutMapping("/modifier_password/{id}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> modifier_password(@Valid @RequestBody ChangePWDRequest changePWDRequest, @PathVariable("id") long id) {

@@ -27,4 +27,8 @@ public interface ClientRepository extends JpaRepository<Client,Long> {
     @Transactional
     int deleteMailPassword(Long id,String vide);
 
+    @Query(value = "select c From Client c where c.username=?1 ")
+    @Transactional
+    Client findByEmail(String email);
+
 }

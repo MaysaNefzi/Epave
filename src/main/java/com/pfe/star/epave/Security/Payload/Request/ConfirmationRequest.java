@@ -5,7 +5,7 @@ import javax.validation.constraints.NotBlank;
 public class ConfirmationRequest {
     @NotBlank
     private String code;
-    private String cin;
+    private String username;
 
     public String getCode() {
         return code;
@@ -15,11 +15,11 @@ public class ConfirmationRequest {
         this.code = code;
     }
 
-    public String getCin() {
-        return cin;
+    public String getUsername() {
+        return username;
     }
 
-    public void setCin(String cin) {
-        this.cin = cin;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

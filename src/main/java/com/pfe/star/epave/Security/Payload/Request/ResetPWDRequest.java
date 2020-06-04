@@ -3,7 +3,7 @@ package com.pfe.star.epave.Security.Payload.Request;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-public class ResetPWDRequest {
+    public class ResetPWDRequest {
     @Email
     @NotBlank
     private String username;

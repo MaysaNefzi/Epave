@@ -84,7 +84,12 @@ public class ClientController {
         return C_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
 
     }
+    @GetMapping("/client_ByEmail/{e}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Client> client_ByEmail(@PathVariable String e) {
+        return C_repo.findAll().stream().filter(x -> x.getUsername().equals(e)).collect(Collectors.toList());
 
+    }
     @PostMapping("/ajouter_compte_client")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> ajouter_compte_client(@Valid @RequestBody Client client) throws URISyntaxException {
@@ -107,19 +112,23 @@ public class ClientController {
                     .badRequest()
                     .body(new MessageResponse("Cin introuvable!"));
         Client c = client.get();
+        if(!Confirm_Repo.tokenbyidClient(c.getId()).isEmpty())
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Vous avez un code deja"));
         if (c.isCompteActif())
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Vous avez un compte deja"));
-        c.setCin(c.getCin());
-        c.setId(c.getId());
-        c.setNom(c.getNom());
-        c.setPrenom(c.getPrenom());
-        c.setAdresse(c.getAdresse());
-        c.setDelegation(c.getDelegation());
-        c.setGouvernement(c.getGouvernement());
-        c.setTel1(c.getTel1());
-        c.setTel2(c.getTel2());
+//        c.setCin(c.getCin());
+//        c.setId(c.getId());
+//        c.setNom(c.getNom());
+//        c.setPrenom(c.getPrenom());
+//        c.setAdresse(c.getAdresse());
+//        c.setDelegation(c.getDelegation());
+//        c.setGouvernement(c.getGouvernement());
+//        c.setTel1(c.getTel1());
+//        c.setTel2(c.getTel2());
         Set<Role> roles = new HashSet<>();
         Role cRole = roleRepository.findByName(ERole.ROLE_CLT)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -144,6 +153,28 @@ public class ClientController {
         return ResponseEntity.ok(new MessageResponse("En attente de confirmation"));
     }
 
+    @PutMapping("/newCode/{email}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ConfirmationToken newCode(@PathVariable String email){
+        Client client1 = C_repo.findByEmail(email);
+        Long idC =client1.getId();
+        if(Confirm_Repo.tokenbyidClient(idC).isEmpty())
+            return new ConfirmationToken();
+        ConfirmationToken c= Confirm_Repo.tokenbyidClient(idC).get();
+        Client client = C_repo.findById(idC).get()  ;
+        Date creation =new Date();
+        c.setCreatedDate(creation);
+        c.setExpiredDate(new Date(creation.getTime()+(1000 * 60 * 60)));//expiration code apres 1h
+        String code=generator.Codegenerator();
+        c.setConfirmationToken(code);
+        Confirm_Repo.save(c);
+        mailSender.sendEmail(client.getUsername(),"Code de Confirmation","Bonjour Mme/Mr "+client.getNom()
+                +"\n \n L'équipe STAR est heureuse de vous voir parmi elle. \n Vous trouvez ci-dessous votre code de confirmation ,merci de confirmer votre inscription tout de suite\n \n"
+                +code
+                +"\n \n Merci");
+        return c;
+    }
+
     @PostMapping("/confirm-account")
     public ResponseEntity<?>confirmation(@RequestBody ConfirmationRequest confirmationRequest){
         Date now =new Date();
@@ -151,7 +182,7 @@ public class ClientController {
         Map<String, String> accountConfirmation = new HashMap<>();
         accountConfirmation.put("accountConfirmation", "true");
         Client client = C_repo.getById(token.getClient().getId());
-        if(token== null)
+        if(token== null || client.getUsername()!=confirmationRequest.getUsername())
         {
             accountConfirmation.put("accountConfirmation", "false");
             return ResponseEntity
@@ -172,6 +203,7 @@ public class ClientController {
         Confirm_Repo.deleteConfirmationToken(token.getIdClient());
         return ResponseEntity.ok(new MessageResponse("Client Confirmé"));
     }
+
     @DeleteMapping("/supprimer_client/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Boolean> supprimer_client(@PathVariable Long id) {

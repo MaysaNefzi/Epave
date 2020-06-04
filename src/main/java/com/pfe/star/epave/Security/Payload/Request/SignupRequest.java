@@ -13,6 +13,7 @@ public class SignupRequest {
     @NotNull
     private String password;
 
+
     public String getUsername() {
         return username;
     }
