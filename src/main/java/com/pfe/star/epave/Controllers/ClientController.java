@@ -189,32 +189,39 @@ public class ClientController {
     }
 
     @PostMapping("/confirm-account")
-    public ResponseEntity<?>confirmation(@RequestBody ConfirmationRequest confirmationRequest){
-        Date now =new Date();
-        ConfirmationToken token = Confirm_Repo.findByConfirmationToken(confirmationRequest.getCode());
-        Map<String, String> accountConfirmation = new HashMap<>();
-        accountConfirmation.put("accountConfirmation", "true");
-        Client client = C_repo.getById(token.getClient().getId());
-        if(token== null || client.getUsername()!=confirmationRequest.getUsername())
-        {
-            accountConfirmation.put("accountConfirmation", "false");
-            return ResponseEntity
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<?> confirmation(@RequestBody ConfirmationRequest confirmationRequest){
+        try {
+            Date now = new Date();
+            ConfirmationToken token = Confirm_Repo.findByConfirmationToken(confirmationRequest.getCode());
+            Map<String, String> accountConfirmation = new HashMap<>();
+            accountConfirmation.put("accountConfirmation", "true");
+            Client client = C_repo.getById(token.getClient().getId());
+            if (client.getUsername().compareTo(confirmationRequest.getUsername()) != 0) {
+                accountConfirmation.put("accountConfirmation", "false");
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Code invalide"));
+            }
+            if (now.compareTo(token.getExpiredDate()) > 0) {
+                accountConfirmation.put("accountConfirmation", "false");
+                Confirm_Repo.deleteConfirmationToken(token.getIdClient());
+                C_repo.deleteMailPassword(token.getIdClient(), null);
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Code expiré"));
+            }
+            accountConfirmation.put("username", client.getUsername());
+            client.setCompteActif(true);
+            C_repo.save(client);
+            Confirm_Repo.deleteConfirmationToken(token.getIdClient());
+            return ResponseEntity.ok(new MessageResponse("Client Confirmé"));
+        }
+        catch (NullPointerException e){
+             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Code invalide"));
         }
-        if (now.compareTo(token.getExpiredDate())>0){
-            accountConfirmation.put("accountConfirmation", "false");
-            Confirm_Repo.deleteConfirmationToken(token.getIdClient());
-            C_repo.deleteMailPassword(token.getIdClient(),null);
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Code expiré"));
-        }
-        accountConfirmation.put("username", client.getUsername());
-        client.setCompteActif(true);
-        C_repo.save(client);
-        Confirm_Repo.deleteConfirmationToken(token.getIdClient());
-        return ResponseEntity.ok(new MessageResponse("Client Confirmé"));
     }
 
     @DeleteMapping("/supprimer_client/{id}")
