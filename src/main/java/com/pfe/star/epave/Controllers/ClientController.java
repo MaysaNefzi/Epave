@@ -149,6 +149,10 @@ public class ClientController {
                 +"\n \n Merci");
         c.setUsername(signupRequest.getUsername());
         c.setPassword(encoder.encode(signupRequest.getPassword()));
+        c.setNom(signupRequest.getNom());
+        c.setPrenom(signupRequest.getPrenom());
+        c.setTel1(signupRequest.getTel1());
+        c.setTel2(signupRequest.getTel2());
         C_repo.save(c);
         return ResponseEntity.ok(new MessageResponse("En attente de confirmation"));
     }

@@ -73,36 +73,4 @@ public class AuthController {
                 userDetails.getPassword(),
                 roles));
     }
-
-    /*@PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
-        }
-
-        Utilisateur utilisateur=new Utilisateur(signUpRequest.getCin(),
-                signUpRequest.getUsername(),
-                encoder.encode((signUpRequest.getPassword())));
-
-        Set<String> strRoles = signUpRequest.getRole();
-        Set<Role> roles = new HashSet<>();
-
-        if (strRoles != null){
-            strRoles.forEach(role -> {
-
-                if(role=="client"){
-                        Role clientRole = roleRepository.findByName(ERole.ROLE_CLT)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(clientRole);
-
-                    utilisateur.setRoles(roles);
-                    userRepository.save(utilisateur);
-                }
-            });
-        }
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
-    }*/
 }
