@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
@@ -24,8 +25,8 @@ public class Offre {
     @JoinColumn(name="vente_id",referencedColumnName = "id",insertable = false,updatable = false)
     private Vente vente;
     @NotNull
-    @JsonFormat(pattern = "MM/dd/yyyy")
-    private LocalDate dateOffre;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDateTime dateOffre;
     @NotNull
     private double montant;
     @NotNull
@@ -37,7 +38,7 @@ public class Offre {
     public Offre() {
     }
 
-    public Offre(Epaviste epaviste, Vente vente, @NotNull LocalDate dateOffre, @NotNull double montant, @NotNull String urlJustificatif, @NotNull boolean offreAcceptee, String commentaire) {
+    public Offre(Epaviste epaviste, Vente vente, @NotNull LocalDateTime dateOffre, @NotNull double montant, @NotNull String urlJustificatif, @NotNull boolean offreAcceptee, String commentaire) {
         this.epaviste = epaviste;
         this.vente = vente;
         this.dateOffre = dateOffre;
@@ -71,11 +72,11 @@ public class Offre {
         this.vente = vente;
     }
 
-    public LocalDate getDateOffre() {
+    public LocalDateTime getDateOffre() {
         return dateOffre;
     }
 
-    public void setDateOffre(LocalDate dateOffre) {
+    public void setDateOffre(LocalDateTime dateOffre) {
         this.dateOffre = dateOffre;
     }
 
