@@ -3,6 +3,7 @@ package com.pfe.star.epave.Controllers;
 import com.pfe.star.epave.Models.ERole;
 import com.pfe.star.epave.Models.Gestionnaire;
 import com.pfe.star.epave.Models.Role;
+import com.pfe.star.epave.Models.Utilisateur;
 import com.pfe.star.epave.Repositories.GestionnaireRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
@@ -13,8 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.http.ResponseEntity;;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +66,11 @@ public class GestionnaireController {
     public Collection<Gestionnaire> gest_Bycin(@PathVariable String cin) {
         return Gest_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
 
+    }
+    @GetMapping("/gest_ByEmail/{email}")
+    @CrossOrigin(origins = "*")
+    public Collection<Utilisateur> gest_ByEmail(@PathVariable String email) {
+        return Gest_repo.findAll().stream().filter(x -> x.getUsername().equals(email)).collect(Collectors.toList());
     }
     @PostMapping("/ajouter_gest")
     @CrossOrigin(origins = "http://localhost:4200")

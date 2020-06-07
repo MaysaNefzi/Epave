@@ -12,4 +12,7 @@ import java.util.List;
 public interface SinistreRepository  extends JpaRepository<Sinistre,Long> {
     @Query(value = "SELECT s from Sinistre  s where s.id=?1 ")
     public Sinistre Sin(Long idS);
+
+    List<Sinistre> findByMarqueLike(String recherche);
+    List<Sinistre> findByModeleLike(String recherche);
 }

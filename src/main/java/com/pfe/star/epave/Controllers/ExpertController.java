@@ -3,6 +3,7 @@ package com.pfe.star.epave.Controllers;
 import com.pfe.star.epave.Models.ERole;
 import com.pfe.star.epave.Models.Expert;
 import com.pfe.star.epave.Models.Role;
+import com.pfe.star.epave.Models.Utilisateur;
 import com.pfe.star.epave.Repositories.ExpertRepository;
 import com.pfe.star.epave.Repositories.RoleRepository;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
@@ -60,7 +61,11 @@ public class ExpertController {
     public Collection<Expert> exp_ByCin(@PathVariable String cin) {
         return Exp_repo.findAll().stream().filter(x -> x.getCin().equals(cin)).collect(Collectors.toList());
     }
-
+    @GetMapping("/exp_ByEmail/{email}")
+    @CrossOrigin(origins = "*")
+    public Collection<Utilisateur> gest_ByEmail(@PathVariable String email) {
+        return Exp_repo.findAll().stream().filter(x -> x.getUsername().equals(email)).collect(Collectors.toList());
+    }
 
     @PostMapping("/ajouter_exp")
     @CrossOrigin(origins = "http://localhost:4200")

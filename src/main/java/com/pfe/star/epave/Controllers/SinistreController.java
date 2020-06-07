@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @RestController
@@ -67,6 +68,18 @@ public class SinistreController {
         return Sin_repo.findAll().stream().filter(x -> x.getImmatriculation().equals(immatriculation)).collect(Collectors.toList());
 
     }
+
+
+    @GetMapping(value = "/sin_byMarque/{recherche}")
+    public List<Sinistre> sinistreBymarque(@PathVariable String recherche) {
+        return Sin_repo.findByMarqueLike("%"+recherche+"%");
+    }
+    @GetMapping(value = "/sin_byModele/{recherche}")
+    public List<Sinistre> sinistreBymodele(@PathVariable String recherche) {
+        return Sin_repo.findByModeleLike("%"+recherche+"%");
+    }
+
+
     private boolean est_Epave(Sinistre sin) {
         return sin.getEpave().equals(epave);
     }
