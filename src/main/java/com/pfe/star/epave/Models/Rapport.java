@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Entity
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
@@ -21,7 +20,6 @@ public class Rapport {
     private double valeurVenale;
     @NotNull
     private String lieuVehicule;
-    @NotNull boolean verif=true;
     @NotNull
     @ManyToOne
     @JoinColumn(name="sinistre_id" )
@@ -30,22 +28,15 @@ public class Rapport {
     public Rapport() {
     }
 
-    public Rapport(@NotNull String degatsConstates, @NotNull double estimationValeurEpave, @NotNull double valeurVenale, @NotNull String lieuVehicule, @NotNull boolean verif, @NotNull Sinistre sinistre) {
+    public Rapport( String degatsConstates,  double estimationValeurEpave,  double valeurVenale,  String lieuVehicule,   Sinistre sinistre) {
         this.degatsConstates = degatsConstates;
         this.estimationValeurEpave = estimationValeurEpave;
         this.valeurVenale = valeurVenale;
         this.lieuVehicule = lieuVehicule;
-        this.verif = verif;
         this.sinistre = sinistre;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getDegatsConstates() {
         return degatsConstates;
@@ -87,11 +78,4 @@ public class Rapport {
         this.sinistre = sinistre;
     }
 
-    public boolean isVerif() {
-        return verif;
-    }
-
-    public void setVerif(boolean verif) {
-        this.verif = verif;
-    }
 }

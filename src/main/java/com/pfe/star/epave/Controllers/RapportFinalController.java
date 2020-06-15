@@ -1,6 +1,6 @@
 package com.pfe.star.epave.Controllers;
 
-import com.pfe.star.epave.Models.Rapport;
+import com.pfe.star.epave.Models.RapportPre;
 import com.pfe.star.epave.Models.RapportFinal;
 import com.pfe.star.epave.Repositories.RapportFinalRepository;
 import javassist.NotFoundException;
@@ -44,7 +44,7 @@ public class RapportFinalController {
     }
     @GetMapping("/rapport_final_BySinId/{sin}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Collection<Rapport> rapport_ByNumSinistre(@PathVariable Long sin) {
+    public Collection<RapportFinal> rapport_ByNumSinistre(@PathVariable Long sin) {
         return RF_repo.findAll().stream().filter(x -> x.getSinistre().getId().equals(sin)).collect(Collectors.toList());
 
     }

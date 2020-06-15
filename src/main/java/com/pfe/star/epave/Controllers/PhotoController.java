@@ -7,6 +7,7 @@ import com.pfe.star.epave.Repositories.OffreRepository;
 import com.pfe.star.epave.Repositories.PhotoRepository;
 import com.pfe.star.epave.Repositories.SinistreRepository;
 import com.pfe.star.epave.Repositories.VenteRepository;
+import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import javassist.NotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
@@ -66,21 +67,33 @@ public class PhotoController {
 
     @PostMapping("/upload/{idS}/{nom}")
     public ResponseEntity uploadToLocalFileSystem(@RequestParam("file") MultipartFile file , @PathVariable Long idS, @PathVariable String nom) {
+        Sinistre sinistre = S_repo.Sin(idS);
+        String pathFolder = "C:/Users/amine/Desktop/Dossiers/Epave/src/assets/images/"+sinistre.getNumeroSinistre();
+        File folder = new File(pathFolder);
+        if (!folder.exists()) {
+            if (folder.mkdir()) {
+                System.out.println("Folder got created");
+             } else {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Failed to create directory!"));
+            }
+        }
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        Path path = Paths.get("C:/Users/amine/Desktop/Epave/src/assets/images/" + fileName);
+        Path path = Paths.get(pathFolder+"/" + fileName);
         try {
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String fileDownloadUri = path.toString().replace("C:\\Users\\amine\\Desktop\\Epave\\src\\" , "../../../"  );
+        String fileDownloadUri = path.toString().replace("C:\\Users\\amine\\Desktop\\Dossiers\\Epave\\src\\" , "../../../"  );
         fileDownloadUri=fileDownloadUri.replace('\\','/');
         Photo p =new Photo();
         LocalDateTime d = LocalDateTime.now();
         p.setUrlPhoto(fileDownloadUri);
         p.setDateAjout(d);
         p.setAjouteePar(nom);
-        Sinistre sinistre = S_repo.Sin(idS);
+
         p.setSinistre(sinistre);
         log.info("Ajouter photo", p);
         Photo result = P_repo.save(p);
@@ -108,7 +121,7 @@ public class PhotoController {
         } catch (NotFoundException ex) {
             ex.printStackTrace();
         }
-        String UrlPhoto = p.getUrlPhoto().replace("../../../"  ,"C:/Users/amine/Desktop/Epave/src/" );
+        String UrlPhoto = p.getUrlPhoto().replace("../../../"  ,"C:/Users/amine/Desktop/Dossiers/Epave/src/" );
         //Files.createFile(Paths.get(UrlPhoto));
         Path fileToDeletePath = Paths.get(UrlPhoto);
         Files.delete(fileToDeletePath);

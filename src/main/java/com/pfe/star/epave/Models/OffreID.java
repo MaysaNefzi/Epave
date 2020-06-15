@@ -1,6 +1,7 @@
 package com.pfe.star.epave.Models;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -10,15 +11,13 @@ public class OffreID implements Serializable {
     private Long epavisteId;
     @Column(name="vente_id")
     private Long venteId;
-    private Long numOffre;
 
     public OffreID() {
     }
 
-    public OffreID(Long epavisteId, Long venteId, Long numOffre) {
+    public OffreID(Long epavisteId, Long venteId) {
         this.epavisteId = epavisteId;
         this.venteId = venteId;
-        this.numOffre = numOffre;
     }
 
     @Override
@@ -49,13 +48,5 @@ public class OffreID implements Serializable {
 
     public void setVenteId(Long venteId) {
         this.venteId = venteId;
-    }
-
-    public Long getNumOffre() {
-        return numOffre;
-    }
-
-    public void setNumOffre(Long numOffre) {
-        this.numOffre = numOffre;
     }
 }

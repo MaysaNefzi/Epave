@@ -121,15 +121,6 @@ public class ClientController {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Vous avez un compte deja"));
-//        c.setCin(c.getCin());
-//        c.setId(c.getId());
-//        c.setNom(c.getNom());
-//        c.setPrenom(c.getPrenom());
-//        c.setAdresse(c.getAdresse());
-//        c.setDelegation(c.getDelegation());
-//        c.setGouvernement(c.getGouvernement());
-//        c.setTel1(c.getTel1());
-//        c.setTel2(c.getTel2());
         Set<Role> roles = new HashSet<>();
         Role cRole = roleRepository.findByName(ERole.ROLE_CLT)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));

@@ -19,10 +19,10 @@ public class Vente {
     @GeneratedValue
     private Long id;
   //  @NotNull
-    @JsonFormat(pattern = "MM/dd/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateDebut;
 //    @NotNull
-    @JsonFormat(pattern = "MM/dd/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateFin;
     @NotNull
     private int duree;

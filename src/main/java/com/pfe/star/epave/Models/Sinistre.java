@@ -47,7 +47,7 @@ public class Sinistre {
     private Expert expert;
     @OneToMany(mappedBy="sinistre", cascade= CascadeType.ALL)
     @JsonIgnore
-    private Set<Rapport> rapports=new HashSet<>();
+    private Set<Rapport> rapports =new HashSet<>();
 
     @OneToMany(mappedBy="sinistre", cascade= CascadeType.ALL)
     private Set<Photo> photos= new HashSet<>();

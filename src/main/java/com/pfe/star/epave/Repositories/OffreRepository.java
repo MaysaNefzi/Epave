@@ -13,14 +13,11 @@ public interface OffreRepository  extends JpaRepository<Offre,Long> {
     @Query(value = "SELECT o from Offre o where o.id.venteId=?1  order by  o.montant DESC ")
     public List<Offre> getOffresoreder(Long id);
 
-    @Query(value = "SELECT o from Offre o where o.id.venteId=?1 and o.id.epavisteId=?2  and o.id.numOffre=?3")
-    public Offre OffreById(Long idV,Long idE , Long num);
-
-    @Query(value = "SELECT o from Offre o where o.id.numOffre=?1 ")
-    public Offre OffreById(Long numOffre);
+    @Query(value = "SELECT o from Offre o where o.id.venteId=?1 and o.id.epavisteId=?2 ")
+    public Offre OffreById(Long idV,Long idE);
     @Query(value = "SELECT o from Offre o where o.id.epavisteId=?1 ")
     public Collection<Offre> OffreByEpv(Long idE);
 
-    @Query(value = "SELECT o from Offre o where o.id.venteId=?1 ")
+    @Query(value = "SELECT o from Offre o where o.id.venteId=?1 and o.offreAcceptee=true")
     public Offre OffreAcceptee(Long id);
 }

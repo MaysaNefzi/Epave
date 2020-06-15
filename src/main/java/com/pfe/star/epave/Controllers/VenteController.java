@@ -2,7 +2,6 @@ package com.pfe.star.epave.Controllers;
 
 
 import com.pfe.star.epave.Models.Offre;
-import com.pfe.star.epave.Models.Rapport;
 import com.pfe.star.epave.Models.Vente;
 import com.pfe.star.epave.Repositories.OffreRepository;
 import com.pfe.star.epave.Repositories.VenteRepository;
@@ -15,11 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -118,8 +116,6 @@ public class VenteController {
         return  l2;
     }
 
-    //
-
     @GetMapping("/vente_Encours")
     @CrossOrigin(origins = "http://localhost:4200")
     public List<Vente> Vente_Encours(){
@@ -136,8 +132,20 @@ public class VenteController {
     @PostMapping("/ajouter_vente")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Vente> ajouter_vente(@Valid @RequestBody Vente vente) throws URISyntaxException {
+        vente.setDateDebut(LocalDateTime.now());
+        LocalDateTime debut = vente.getDateDebut();
+        vente.setDateFin(debut.plusDays(vente.getDuree()));
         log.info("Ajouter une nouvelle vente", vente);
         Vente result = V_repo.save(vente);
+        String pathFolder = "C:/Users/amine/Desktop/ventes/"+result.getSinistre().getImmatriculation();
+        File folder = new File(pathFolder);
+        if (!folder.exists()) {
+            if (folder.mkdir()) {
+                System.out.println("Folder got created");
+            } else {
+                System.out.println("Failed to create directory!");
+            }
+        }
         return ResponseEntity.created(new URI("/ajouter_vente" + result.getId())).body(result);
     }
 
@@ -172,8 +180,6 @@ public class VenteController {
             return true;
         }
     }
-
-
 
     public boolean traitement_encours(Vente v){
         LocalDateTime now = LocalDateTime.now();
@@ -212,8 +218,8 @@ public class VenteController {
             return ResponseEntity.notFound().build();
         Vente v = venteOptional.get();
         v.setId(id);
-        v.setDateDebut(vente.getDateDebut());
-        v.setDateFin(vente.getDateFin());
+        v.setDateDebut(LocalDateTime.now());
+        v.setDateFin(vente.getDateDebut().plusDays(vente.getDuree()));
         v.setDescription(vente.getDescription());
         v.setDuree(vente.getDuree());
         v.setEnchere(vente.getEnchere());
@@ -221,8 +227,20 @@ public class VenteController {
         Vente result= V_repo.save(v);
         return ResponseEntity.ok().body(result);
     }
-    
 
+    @PutMapping("/arreter_vente/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<Vente> arretet_vente( @PathVariable("id") long id) {
+        Optional<Vente> venteOptional = V_repo.findById(id);
+        if (venteOptional.isEmpty())
+            return ResponseEntity.notFound().build();
+        Vente v = venteOptional.get();
+        v.setId(id);
+        v.setDateFin(LocalDateTime.now());
+        v.setDuree(v.getDateFin().compareTo(v.getDateDebut()));
+        Vente result= V_repo.save(v);
+        return ResponseEntity.ok().body(result);
+    }
     @DeleteMapping("/supprimer_vente/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Boolean> supprimer_vente(@PathVariable Long id) {
@@ -238,4 +256,24 @@ public class VenteController {
         response.put("Vente supprimée avec succes", Boolean.TRUE);
         return response;
     }
+    @GetMapping("/traitement_vente/{idV}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Vente traitement_vente( @PathVariable Long idV){
+        Vente v =null;
+        if(!V_repo.findById(idV).isEmpty()){
+            v= V_repo.findById(idV).get();
+            LocalDateTime now = LocalDateTime.now();
+            int x =v.getDateFin().compareTo(now);
+            if(x>0){
+                System.out.println("ss   : "+x);
+                return null;
+            }
+            else {
+                System.out.println("mm   : "+x);
+                return v;
+            }
+        }
+        return v;
+    }
+
 }
