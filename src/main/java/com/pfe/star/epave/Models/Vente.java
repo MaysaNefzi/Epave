@@ -31,6 +31,7 @@ public class Vente {
     @NotNull
     private Boolean enchere;
     private double prixDebut;
+    private String urlEngagement = null;
     @OneToMany(mappedBy="vente",cascade=CascadeType.ALL)
     @JsonIgnore
     private Set<Offre>offres=new HashSet<>();
