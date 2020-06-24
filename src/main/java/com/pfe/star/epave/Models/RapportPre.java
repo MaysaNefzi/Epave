@@ -10,9 +10,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class)
 public class RapportPre extends Rapport {
-    @Id
-    @GeneratedValue
-    private Long id;
     @NotNull Integer verif=0;//1 : verifier   -1:a corrigé
 
     public RapportPre() {
@@ -20,15 +17,7 @@ public class RapportPre extends Rapport {
     public RapportPre( String degatsConstates,  double estimationValeurEpave,  double valeurVenale,  String lieuVehicule,  Integer verif,  Sinistre sinistre,  String nomEpaviste,  String prenomEpaviste,  double montantAchat) {
         super(degatsConstates, estimationValeurEpave, valeurVenale, lieuVehicule, sinistre);
         this.verif=verif;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    } 
 
     public Integer getVerif() {
         return verif;

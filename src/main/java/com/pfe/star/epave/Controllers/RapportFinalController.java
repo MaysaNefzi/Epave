@@ -1,7 +1,9 @@
 package com.pfe.star.epave.Controllers;
 
+import com.pfe.star.epave.Models.Police;
 import com.pfe.star.epave.Models.RapportPre;
 import com.pfe.star.epave.Models.RapportFinal;
+import com.pfe.star.epave.Repositories.PoliceRepository;
 import com.pfe.star.epave.Repositories.RapportFinalRepository;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
@@ -14,10 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,8 +26,11 @@ public class RapportFinalController {
 
     @Autowired
     private final RapportFinalRepository RF_repo;
-    public RapportFinalController(RapportFinalRepository r_repo ){
+    private final PoliceController P_cntrl;
+
+    public RapportFinalController(RapportFinalRepository r_repo , PoliceController p_cntrl){
         RF_repo=r_repo;
+        P_cntrl=p_cntrl;
     }
     @GetMapping("/liste_rapport_final")
     @CrossOrigin(origins = "http://localhost:4200")
@@ -48,6 +50,12 @@ public class RapportFinalController {
         return RF_repo.findAll().stream().filter(x -> x.getSinistre().getId().equals(sin)).collect(Collectors.toList());
 
     }
+    //    @GetMapping("/rapport_final_ByEpv/{idC}")
+    //    @CrossOrigin(origins = "http://localhost:4200")
+    //    public List<RapportFinal> rapport_final_ByEpv(@PathVariable Long idC) {
+    //       // List<Police> polices = P_cntrl.police_ByClient(idC).toArray();
+    //
+    //    }
     @PostMapping("/ajouter_rapport_final")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<RapportFinal> ajouter_rapport_final(@Valid @RequestBody RapportFinal rapF) throws URISyntaxException {

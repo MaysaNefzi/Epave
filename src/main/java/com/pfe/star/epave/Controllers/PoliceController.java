@@ -63,9 +63,8 @@ public class PoliceController {
 
     @GetMapping("/police_ByClient/{idClt}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Collection<Police> police_ByNumPolice(@PathVariable Long idClt) {
+    public Collection<Police> police_ByClient(@PathVariable Long idClt) {
         return Police_repo.findAll().stream().filter(x -> x.getClient().getId().equals(idClt)).collect(Collectors.toList());
     }
-
 
 }

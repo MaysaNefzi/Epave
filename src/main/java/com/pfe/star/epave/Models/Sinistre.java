@@ -31,7 +31,6 @@ public class Sinistre {
     private String numChassis;
     @NotNull
     private String marque;
-    @NotNull
     private Boolean epave;
     @NotNull
     private String modele;

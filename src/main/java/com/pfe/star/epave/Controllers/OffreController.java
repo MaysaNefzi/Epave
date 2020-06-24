@@ -6,10 +6,12 @@ import com.pfe.star.epave.Models.*;
 import com.pfe.star.epave.Repositories.OffreRepository;
 import com.pfe.star.epave.Repositories.PhotoRepository;
 import com.pfe.star.epave.Repositories.SinistreRepository;
+import com.pfe.star.epave.Repositories.VenteRepository;
 import com.pfe.star.epave.Security.Payload.Response.MessageResponse;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +36,10 @@ public class OffreController {
     private final Logger log = LoggerFactory.getLogger(OffreController.class);
     @Autowired
     private final OffreRepository Offre_repo;
-    private  final SinistreRepository S_repo;
-    public OffreController(OffreRepository offre_repo , SinistreRepository s){
+    private  final VenteRepository v_repo;
+    public OffreController(OffreRepository offre_repo , VenteRepository s){
         Offre_repo=offre_repo;
-        S_repo=s;
+        v_repo=s;
     }
 
     @GetMapping("/liste_offre")
@@ -68,6 +70,19 @@ public class OffreController {
         }
         return null;
     }
+    @GetMapping("/montant_best/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public double montant_best(@PathVariable("id") Long id) throws IndexOutOfBoundsException , AopInvocationException {
+        try {
+             return Offre_repo.montantBest(id);
+        }
+        catch(AopInvocationException e){
+            System.out.println(e);
+            Optional<Vente> v = v_repo.findById(id);
+            return v.get().getPrixDebut();
+        }
+    }
+
     @GetMapping("/offre_ById/{idV}/{idE}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Offre offre_ById(@PathVariable("idE") Long idE ,@PathVariable("idV") Long idV  ) {
@@ -83,6 +98,23 @@ public class OffreController {
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Offre> offre_ByEpv(Long idE ) {
         return Offre_repo.OffreByEpv(idE);
+    }
+
+    @GetMapping("/nb_offres/{idV}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Integer nb_offres( @PathVariable Long idV ) {
+        return Offre_repo.getnbOffres(idV);
+    }
+
+    @GetMapping("/client_reponse/{idV}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Integer client_reponse( @PathVariable("idV") Long idv ) {
+        Collection<Offre> L = offre_order(idv);
+        for (Offre e: L) {
+            if(e.getClientAccepte()!=0)
+                return  e.getClientAccepte();
+        }
+        return 0;
     }
 
     @PostMapping("/ajouter_offre")
@@ -115,23 +147,16 @@ public class OffreController {
         String fileDownloadUri = path.toString();
         return fileDownloadUri;
     }
-//    @DeleteMapping("/supprimer_photo_BySin/{id}")
-//    @CrossOrigin(origins = "http://localhost:4200")
-//    public Map<String, Boolean> supprimer_p(@PathVariable Long id) {
-//        List<Photo> p = P_repo.photoBySin(id);
-//
-//        p.stream().forEach(photo -> { P_repo.delete(photo);});
-//        Map<String, Boolean> response = new HashMap<>();
-//        response.put("Photos supprimées avec succes", Boolean.TRUE);
-//        return response;
-//    }
+
 
     @PutMapping("modifier_offre/{idE}/{idV}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Offre> modifier_offre(@Valid @RequestBody Offre offre, @PathVariable("idE") long idE, @PathVariable("idV") long idV) {
+    public ResponseEntity<Offre> modifier_offre(@Valid @RequestBody Offre offre, @PathVariable("idE") long idE, @PathVariable("idV") long idV) throws IOException {
         log.info("Modifier Offre", offre);
         Offre of =new Offre();
         of = Offre_repo.OffreById(idV,idE);
+        Path fileToDeletePath = Paths.get(of.getUrlJustificatif());
+        Files.delete(fileToDeletePath);
         try{
         //of.setId(id);
         of.setDateOffre(LocalDateTime.now());
@@ -140,10 +165,38 @@ public class OffreController {
         of.setOffreAcceptee(offre.isOffreAcceptee());
         of.setUrlJustificatif(offre.getUrlJustificatif());
         of.setMontant(offre.getMontant());
-        of.setCommentaire(offre.getCommentaire());
         of.setClientAccepte(offre.getClientAccepte());
         Offre result= Offre_repo.save(of);
         return ResponseEntity.ok().body(result);
+        }
+        catch(NullPointerException e){
+            return ResponseEntity.notFound().build();}
+    }
+    @PutMapping("accepter_offre/{idE}/{idV}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<Offre> accepter_offre(@PathVariable("idE") long idE, @PathVariable("idV") long idV)  {
+
+        Offre of =new Offre();
+        of = Offre_repo.OffreById(idV,idE);
+        try{
+            of.setOffreAcceptee(true);
+            Offre result= Offre_repo.save(of);
+            return ResponseEntity.ok().body(result);
+        }
+        catch(NullPointerException e){
+            return ResponseEntity.notFound().build();}
+    }
+
+    @PutMapping("refuser/{idE}/{idV}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<Offre> refuser_offre(@PathVariable("idE") long idE, @PathVariable("idV") long idV)  {
+
+        Offre of =new Offre();
+        of = Offre_repo.OffreById(idV,idE);
+        try{
+            of.setOffreAcceptee(false);
+            Offre result= Offre_repo.save(of);
+            return ResponseEntity.ok().body(result);
         }
         catch(NullPointerException e){
             return ResponseEntity.notFound().build();}
@@ -156,7 +209,9 @@ public class OffreController {
         Offre o = null;
         try {
             o = Offre_repo.OffreById(idV,idE);
-        } catch (NullPointerException ex) {
+            Path fileToDeletePath = Paths.get(o.getUrlJustificatif());
+            Files.delete(fileToDeletePath);
+        } catch (NullPointerException | IOException ex) {
             ex.printStackTrace();
         }
         Offre_repo.delete(o);

@@ -48,4 +48,22 @@ public class RechController {
     public List<RapportFinal> RappfByEpv(@PathVariable String nom) {
         return  RapF_repo.Rapport_By_Epv(nom) ;
     }
+
+    @GetMapping(value = "/sin_byMarqueModele/{recherche}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Sinistre> sinistreBymarquemodele(@PathVariable String recherche) {
+        return Sin_repo.findByMarqueModele(recherche);
+    }
+        @GetMapping(value = "/sin_byMarqueModeleClient/{recherche}/{clt}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Sinistre> sinistreBymarquemodeleclient(@PathVariable("recherche") String recherche,@PathVariable("clt") Long clt) {
+        return Sin_repo.findByMarqueModeleClient(clt,recherche);
+    }
+    @GetMapping(value = "/sin_byImm/{recherche}/{clt}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Sinistre sinistreByImmClt(@PathVariable("recherche") String recherche , @PathVariable("clt") Long clt) {
+        Sinistre s = new Sinistre();
+        s=Sin_repo.Sin_ByImmClt(clt,recherche);
+        return s;
+    }
 }

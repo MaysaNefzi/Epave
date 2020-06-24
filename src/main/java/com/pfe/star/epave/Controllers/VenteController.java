@@ -1,22 +1,31 @@
 package com.pfe.star.epave.Controllers;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pfe.star.epave.Models.Offre;
 import com.pfe.star.epave.Models.Vente;
 import com.pfe.star.epave.Repositories.OffreRepository;
 import com.pfe.star.epave.Repositories.VenteRepository;
+import com.pfe.star.epave.Security.Payload.Request.EngagementRequest;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -81,7 +90,7 @@ public class VenteController {
 
     @GetMapping("/vente_BySinId/{sin}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Collection<Vente> rapport_ByNumSinistre(@PathVariable Long sin) {
+    public Collection<Vente> rapport_BySinId(@PathVariable Long sin) {
         return V_repo.findAll().stream().filter(x -> x.getSinistre().getId().equals(sin)).collect(Collectors.toList());
 
     }
@@ -98,7 +107,25 @@ public class VenteController {
         LocalDateTime d = LocalDateTime.now();
         return diff.stream().filter(x -> x.getDateFin().isAfter(d)).collect(Collectors.toList());
     }
+    @GetMapping("/vente_terminee_By_Epv_Sin/{idE}/{sin}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Vente Vente_terminee_By_Epv_Sin(@PathVariable("idE") Long idE , @PathVariable("sin") Long Sinistre) throws NullPointerException{
 
+        Vente v =null;
+        try {
+            List<Vente> epv = Vente_By_Epv(idE);
+            Vente sin = V_repo.Vente_By_Sin(Sinistre);
+            Long idvente=sin.getId();
+           for(int i =0 ; i<epv.size();i++){
+               if(epv.get(i).getId()==idvente)
+                   return sin;
+           }
+       }
+       catch (NullPointerException e){
+           e.printStackTrace();
+       }
+        return v;
+    }
     // all vente termine et participee
     @GetMapping("/vente_terminee_By_Epv/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
@@ -124,7 +151,13 @@ public class VenteController {
 
     }
 
+    @GetMapping("/vente_EncoursRech/{sin}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Vente> Vente_EncoursRech(@PathVariable("sin") Long sin){
+        LocalDateTime d = LocalDateTime.now();
+        return V_repo.findAllByDateFin().stream().filter(x -> x.getDateFin().isAfter(d) && x.getSinistre().getId().equals(sin)).collect(Collectors.toList());
 
+    }
     /*public Collection<Vente> vente_ByEpv(@PathVariable("idE") Long idE ) {
         Collection<Offre> o = O_repo.OffreByEpv(idE);
     }*/
@@ -200,6 +233,11 @@ public class VenteController {
         return V_repo.findAll().stream().filter(this::traitement_encours).collect(Collectors.toList());
     }
 
+    @GetMapping("/traitementSin/{sin}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Collection<Vente> traitementSin(@PathVariable("sin") Long sin) {
+        return V_repo.findAll().stream().filter(x -> traitement_encours(x) && x.getSinistre().getId().equals(sin)).collect(Collectors.toList());
+    }
 
     @GetMapping("/offre_acceptee/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
@@ -219,6 +257,7 @@ public class VenteController {
         Vente v = venteOptional.get();
         v.setId(id);
         v.setDateDebut(LocalDateTime.now());
+        System.out.println(vente.getDuree());
         v.setDateFin(vente.getDateDebut().plusDays(vente.getDuree()));
         v.setDescription(vente.getDescription());
         v.setDuree(vente.getDuree());
@@ -227,6 +266,41 @@ public class VenteController {
         Vente result= V_repo.save(v);
         return ResponseEntity.ok().body(result);
     }
+    @PutMapping("/lettre_engagement/{idV}/{idE}/{clientAccept}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<?> modifier_vente(@RequestParam("file") MultipartFile file, @PathVariable("idV") long idV, @PathVariable("idE") long idE , @PathVariable("clientAccept") Integer clientAccept)throws URISyntaxException, JsonProcessingException {
+        Offre o = null;
+        try {
+            o = O_repo.OffreById(idV,idE);
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
+        }
+        Vente v = o.getVente();
+        o.setClientAccepte(clientAccept);
+
+        String pathFolder = "C:/Users/amine/Desktop/Lettre_engagement/" +v.getSinistre().getNumeroSinistre();
+        File folder = new File(pathFolder);
+        if (!folder.exists()) {
+            if (folder.mkdir()) {
+                System.out.println("Folder got created");
+            } else {
+                System.out.println("Failed to create directory!");
+            }
+        }
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        Path path = Paths.get(pathFolder + "/" + fileName);
+        try {
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String fileDownloadUri = path.toString();
+        v.setUrlEngagement(fileDownloadUri);
+        Offre result= O_repo.save(o);
+        V_repo.save(v);
+        return ResponseEntity.ok().body(result);
+    }
+
 
     @PutMapping("/arreter_vente/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
@@ -276,4 +350,21 @@ public class VenteController {
         return v;
     }
 
+    @GetMapping("/vente_encours_By_EpvSin/{idE}/{idS}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Vente> Vente_encours_By_EpvSin(@PathVariable("idE") Long id,@PathVariable("idS") Long idS){
+        LocalDateTime d = LocalDateTime.now();
+        return  V_repo.Vente_By_Epv(id).stream().filter(x -> x.getDateFin().isAfter(d) && x.getSinistre().getId().equals(idS)).collect(Collectors.toList());
+    }
+    @GetMapping("/vente_encours_N_ByEpvSin/{id}/{idS}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Vente> Vente_encours_N_By_EpvSin(@PathVariable("id") Long id, @PathVariable("idS") Long idS){
+        List<Vente> l2 = Vente_By_Epv(id);
+        Collection<Vente> l1 = liste_vente();
+        List<Vente> diff = l1.stream()
+                .filter(i -> !l2.contains(i))
+                .collect (Collectors.toList());
+        LocalDateTime d = LocalDateTime.now();
+        return diff.stream().filter(x -> x.getDateFin().isAfter(d) && x.getSinistre().getId().equals(idS)).collect(Collectors.toList());
+    }
 }

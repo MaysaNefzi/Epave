@@ -39,19 +39,17 @@ public class Offre {
 
     @NotNull
     private Integer clientAccepte =0 ;//1 : accpete     -1 : refuse
-    private String commentaire;
 
     public Offre() {
     }
 
-    public Offre(Epaviste epaviste, Vente vente, Integer clientAccepte,LocalDateTime dateOffre, double montant, String urlJustificatif, boolean offreAcceptee, String commentaire) {
+    public Offre(Epaviste epaviste, Vente vente, Integer clientAccepte,LocalDateTime dateOffre, double montant, String urlJustificatif, boolean offreAcceptee) {
         this.epaviste = epaviste;
         this.vente = vente;
         this.dateOffre = dateOffre;
         this.montant = montant;
         this.urlJustificatif = urlJustificatif;
         this.offreAcceptee = offreAcceptee;
-        this.commentaire = commentaire;
         this.clientAccepte=clientAccepte;
     }
 
@@ -109,14 +107,6 @@ public class Offre {
 
     public void setOffreAcceptee(boolean offreAcceptee) {
         this.offreAcceptee = offreAcceptee;
-    }
-
-    public String getCommentaire() {
-        return commentaire;
-    }
-
-    public void setCommentaire(String commentaire) {
-        this.commentaire = commentaire;
     }
 
     public Integer getClientAccepte() {

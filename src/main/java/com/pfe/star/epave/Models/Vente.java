@@ -49,7 +49,7 @@ public class Vente {
     }
 
     public Vente(@NotNull LocalDateTime dateDebut, @NotNull LocalDateTime dateFin, int duree, @NotNull String description, @NotNull Boolean enchere, double prixDebut,
-                 @NotNull Sinistre sinistre, @NotNull Set<Epaviste> epavistes, @NotNull Gestionnaire gestionnaire) {
+                 @NotNull Sinistre sinistre, @NotNull Set<Epaviste> epavistes, @NotNull Gestionnaire gestionnaire ,String urlEngagement) {
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.duree = duree;
@@ -59,6 +59,7 @@ public class Vente {
         this.offres = offres;
         this.gestionnaire = gestionnaire;
         this.sinistre =sinistre;
+        this.urlEngagement=urlEngagement;
     }
     public Long getId() {
         return id;
@@ -115,7 +116,13 @@ public class Vente {
     public void setPrixDebut(double prixDebut) {
         this.prixDebut = prixDebut;
     }
+    public String getUrlEngagement() {
+        return urlEngagement;
+    }
 
+    public void setUrlEngagement(String urlEngagement) {
+        this.urlEngagement = urlEngagement;
+    }
 
     public Set<Offre> getOffres() {
         return offres;

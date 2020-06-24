@@ -11,4 +11,5 @@ import java.util.List;
 public interface RapportRepository  extends JpaRepository<RapportPre,Long> {
     @Query(value = "SELECT rp  from RapportPre rp  where rp.verif <> -1   ")
     public List<RapportPre> listeRapport();
+
 }

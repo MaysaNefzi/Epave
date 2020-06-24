@@ -47,7 +47,6 @@ public class SinistreController {
         return Sin_repo.findAll().stream().filter(x -> x.getPolice().getNumPolice().equals(numeroPolice)).collect(Collectors.toList());
 
     }
-
     @GetMapping("/sin_ByNumSinistre/{numeroSinistre}")
     @CrossOrigin(origins = "http://localhost:4200")
     public Collection<Sinistre> sin_ByNumSinistre(@PathVariable String numeroSinistre) {

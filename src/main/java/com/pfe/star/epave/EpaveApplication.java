@@ -20,13 +20,4 @@ public class EpaveApplication {
 
 	@Autowired
 	private OffreController offreservice;
-
-	/*@Override
-	public void run(String... args) throws Exception {
-		 Offre o = offreservice.offre_best((long) 55);
-		 o.setOffreAcceptee(true);
-		 offreservice.modifier_montant(o,o.getId().getEpavisteId(),o.getId().getEpavisteId());
-		 System.out.println(o);
-
-	}*/
 }

@@ -68,7 +68,7 @@ public class PhotoController {
     @PostMapping("/upload/{idS}/{nom}")
     public ResponseEntity uploadToLocalFileSystem(@RequestParam("file") MultipartFile file , @PathVariable Long idS, @PathVariable String nom) {
         Sinistre sinistre = S_repo.Sin(idS);
-        String pathFolder = "C:/Users/amine/Desktop/Dossiers/Epave/src/assets/images/"+sinistre.getNumeroSinistre();
+        String pathFolder = "C:/Users/amine/Desktop/Epave - Copie/src/assets/images/"+sinistre.getNumeroSinistre();
         File folder = new File(pathFolder);
         if (!folder.exists()) {
             if (folder.mkdir()) {
@@ -86,7 +86,7 @@ public class PhotoController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String fileDownloadUri = path.toString().replace("C:\\Users\\amine\\Desktop\\Dossiers\\Epave\\src\\" , "../../../"  );
+        String fileDownloadUri = path.toString().replace("C:\\Users\\amine\\Desktop\\Epave - Copie\\src\\" , "../../../"  );
         fileDownloadUri=fileDownloadUri.replace('\\','/');
         Photo p =new Photo();
         LocalDateTime d = LocalDateTime.now();
